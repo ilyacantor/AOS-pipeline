@@ -188,6 +188,9 @@ const VendorNode = ({ data, selected }: NodeProps) => {
       data.glowRed ? "border-red-500 shadow-[0_0_20px_-3px_rgba(239,68,68,0.6)]" : "",
       data.glowGreen ? "border-green-500 shadow-[0_0_20px_-3px_rgba(34,197,94,0.6)]" : ""
     )}>
+      {/* Top Target Handle for Catalogue */}
+      <Handle type="target" position={Position.Top} id="top-target" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
+      
       <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2" />
       <div className={cn("p-2 rounded bg-slate-950/50", data.color)}>
         {data.icon}
@@ -237,6 +240,11 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
         )}
       </div>
       <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2 -mr-1" />
+      
+      {/* Bottom Source Handle for AOD -> Catalogue */}
+      {data.label === 'AOD' && (
+         <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
+      )}
     </div>
   );
 };
@@ -269,7 +277,7 @@ const initialEdges: Edge[] = [
   { id: 'e-sh1-aod', source: 'shadow1', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-sh2-aod', source: 'shadow2', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-aod-cat', source: 'aod', target: 'catalogue', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top-target', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
