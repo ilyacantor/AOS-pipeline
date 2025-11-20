@@ -146,6 +146,18 @@ const DataFlowEdge = ({
           <animateMotion dur="1.5s" repeatCount="indefinite" path={edgePath} />
         </circle>
       )}
+      {data?.scanning && (
+        <circle r="3" fill="#ffffff">
+          <animateMotion 
+            dur="0.8s" 
+            repeatCount="indefinite" 
+            path={edgePath} 
+            keyPoints="1;0" 
+            keyTimes="0;1" 
+            calcMode="linear" 
+          />
+        </circle>
+      )}
     </>
   );
 };
@@ -284,12 +296,17 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     setEdges((eds) => 
       eds.map((edge) => {
          let active = false;
+         let scanning = false;
          let stroke = '#334155';
          
          if (isComplete) {
             stroke = '#0bcad9';
          } else if (isRunning) {
-            if (pipelineStep === 0 && edge.target === 'aod') { active = true; stroke = '#0bcad9'; }
+            if (pipelineStep === 0 && edge.target === 'aod') { 
+              active = true; 
+              scanning = true; // Enable reverse scan pulse
+              stroke = '#0bcad9'; 
+            }
             if (pipelineStep === 1 && edge.source === 'aod' && edge.target === 'aam') { active = true; stroke = '#0bcad9'; }
             if (pipelineStep === 2 && edge.source === 'aam' && edge.target === 'dcl') { active = true; stroke = '#0bcad9'; }
             if (pipelineStep === 3 && edge.source === 'dcl' && edge.target === 'agents') { active = true; stroke = '#0bcad9'; }
@@ -299,7 +316,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             if (pipelineStep > 2 && edge.target === 'dcl') stroke = '#0bcad9';
          }
 
-         return { ...edge, data: { ...edge.data, active }, style: { stroke, strokeWidth: 2 } };
+         return { ...edge, data: { ...edge.data, active, scanning }, style: { stroke, strokeWidth: 2 } };
       })
     );
   }, [pipelineStep, pipelineState, setNodes, setEdges]);
