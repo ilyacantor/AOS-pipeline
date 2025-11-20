@@ -43,10 +43,7 @@ import {
   Plug, 
   Network, 
   Sparkles, 
-  Search,
-  HelpCircle,
-  AlertTriangle,
-  LayoutGrid
+  Search
 } from 'lucide-react';
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -156,36 +153,19 @@ const edgeTypes = {
 };
 
 const VendorNode = ({ data, selected }: NodeProps) => {
-  const isUnknown = data.isUnknown;
-  const isShadow = data.isShadow;
-  const isIdentified = data.isIdentified;
-
   return (
     <div className={cn(
-      "flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all shadow-lg",
-      "w-24 h-24", // Squarish
+      "flex items-center gap-3 p-3 rounded-lg border bg-slate-900/90 w-52 transition-all shadow-lg",
       selected ? "border-primary shadow-[0_0_15px_-3px_rgba(11,202,217,0.4)]" : "border-slate-800 hover:border-slate-700",
-      data.active ? "border-primary/50 shadow-[0_0_10px_-3px_rgba(11,202,217,0.3)]" : "",
-      isShadow ? "bg-red-900/20 border-red-900/50" : "bg-slate-900/90",
-      data.isOrganized ? "scale-100" : "scale-95 rotate-3" // Slight random rotation when disorganized maybe? handled in parent style
+      data.active ? "border-primary/50 shadow-[0_0_10px_-3px_rgba(11,202,217,0.3)]" : ""
     )}>
-      <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2 opacity-0" />
-      <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 opacity-0" />
-      
-      <div className={cn("p-2 rounded-lg bg-slate-950/50 transition-colors duration-500", data.color)}>
-        {isUnknown && !isIdentified ? <HelpCircle className="w-6 h-6 text-slate-500" /> : data.icon}
+      <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2" />
+      <div className={cn("p-2 rounded bg-slate-950/50", data.color)}>
+        {data.icon}
       </div>
-      
-      <div className="text-center w-full">
-        <div className={cn(
-          "text-[10px] font-medium truncate w-full px-1 transition-all duration-500", 
-          isUnknown && !isIdentified ? "text-slate-500" : "text-slate-200"
-        )}>
-          {isUnknown && !isIdentified ? "????" : data.label}
-        </div>
-        {isShadow && (
-          <div className="text-[8px] text-red-400 font-bold uppercase tracking-wider mt-1">Shadow IT</div>
-        )}
+      <div className="text-left">
+        <div className="text-sm font-medium text-slate-200">{data.label}</div>
+        <div className="text-[10px] text-slate-500">{data.sub}</div>
       </div>
     </div>
   );
@@ -193,25 +173,23 @@ const VendorNode = ({ data, selected }: NodeProps) => {
 
 const ProcessingNode = ({ data, selected }: NodeProps) => {
   const isHex = data.shape === 'hexagon';
-  const isAOD = data.label === 'AOD';
   
   return (
     <div className="relative flex items-center justify-center">
-      <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 -ml-1 opacity-0" />
+      <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 -ml-1" />
       <div 
         className={cn(
-          "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md z-10 relative",
+          "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md",
           isHex ? "w-32 h-32" : "w-32 h-32 rounded-full",
           selected ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "border-slate-700",
           data.active ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "",
-          data.complete ? "border-green-500 shadow-[0_0_15px_-5px_rgba(34,197,94,0.5)]" : "",
-          data.isGlowing ? "shadow-[0_0_50px_10px_rgba(11,202,217,0.6)] border-cyan-400" : ""
+          data.complete ? "border-green-500 shadow-[0_0_15px_-5px_rgba(34,197,94,0.5)]" : ""
         )}
         style={isHex ? { clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" } : {}}
       >
         <div className={cn(
             "transition-colors duration-300",
-            data.active || data.isGlowing ? "text-white scale-110" : "text-slate-400",
+            data.active ? "text-white scale-110" : "text-slate-400",
             data.complete ? "text-green-400" : ""
         )}>
           {data.icon}
@@ -221,14 +199,14 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
           <div className="text-[9px] text-slate-500 uppercase tracking-wider">{data.sub}</div>
         </div>
         
-        {(data.active || data.isGlowing) && (
+        {data.active && (
            <div className={cn(
              "absolute inset-0 z-0 animate-ping opacity-20 bg-primary",
              isHex ? "" : "rounded-full"
            )} style={isHex ? { clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" } : {}} />
         )}
       </div>
-      <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2 -mr-1 opacity-0" />
+      <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2 -mr-1" />
     </div>
   );
 };
@@ -238,56 +216,26 @@ const nodeTypes = {
   processing: ProcessingNode,
 };
 
-// Initial Random Positions for "Disorganized" state
-const getRandomPos = (minY: number, maxY: number) => ({
-  x: Math.random() * 200 - 50, // Random X between -50 and 150
-  y: Math.random() * (maxY - minY) + minY
-});
-
-// Define the 10 asset nodes
-const assetNodesConfig = [
-  { id: 'salesforce', label: 'Salesforce', icon: <Globe className="w-5 h-5" />, color: 'text-blue-400', type: 'brand' },
-  { id: 'mongodb', label: 'MongoDB', icon: <Database className="w-5 h-5" />, color: 'text-green-500', type: 'brand' },
-  { id: 'supabase', label: 'Supabase', icon: <Server className="w-5 h-5" />, color: 'text-emerald-400', type: 'brand' },
-  { id: 'dropbox', label: 'Dropbox', icon: <FileText className="w-5 h-5" />, color: 'text-blue-600', type: 'shadow', isShadow: true },
-  { id: 'gdrive', label: 'G-Drive', icon: <FileText className="w-5 h-5" />, color: 'text-yellow-500', type: 'shadow', isShadow: true },
-  { id: 'server-1', label: 'Unknown Server', icon: <Server className="w-5 h-5" />, color: 'text-red-500', type: 'shadow', isShadow: true },
-  { id: 'legacy-1', label: 'Legacy DB', icon: <Database className="w-5 h-5" />, color: 'text-orange-400', type: 'unknown' },
-  { id: 'legacy-2', label: 'Old Export', icon: <FileText className="w-5 h-5" />, color: 'text-orange-300', type: 'unknown' },
-  { id: 'tool-1', label: 'Int. Tool', icon: <Plug className="w-5 h-5" />, color: 'text-purple-400', type: 'unknown' },
-  { id: 'tool-2', label: 'Analytics', icon: <Network className="w-5 h-5" />, color: 'text-pink-400', type: 'unknown' },
-];
-
-// Generate initial nodes with random positions
 const initialNodes: Node[] = [
-  ...assetNodesConfig.map((n, i) => ({
-    id: n.id,
-    type: 'vendor',
-    position: getRandomPos(50, 550),
-    data: { 
-      label: n.label, 
-      sub: n.type === 'shadow' ? 'Risk: High' : 'Asset', 
-      icon: n.icon, 
-      color: n.color, 
-      isShadow: n.isShadow,
-      isUnknown: n.type === 'unknown',
-      isIdentified: false,
-      isOrganized: false
-    },
-    // Add some rotation for the "disorganized" look
-    style: { transform: `rotate(${Math.random() * 20 - 10}deg)` } 
-  })),
-  { id: 'aod', type: 'processing', position: { x: 400, y: 300 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'catalogue', type: 'processing', position: { x: 400, y: 550 }, data: { label: 'Catalogue', sub: 'Inventory', icon: <LayoutGrid className="w-6 h-6" />, shape: 'hexagon' }, hidden: true },
-  
-  // Other processing nodes (initially hidden or positioned far right until needed in later stages? 
-  // For now keeping them but maybe further out or hidden)
-  { id: 'aam', type: 'processing', position: { x: 700, y: 300 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' }, hidden: true },
-  { id: 'dcl', type: 'processing', position: { x: 950, y: 300 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'hexagon' }, hidden: true },
-  { id: 'agents', type: 'processing', position: { x: 1200, y: 300 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' }, hidden: true },
+  { id: 'salesforce', type: 'vendor', position: { x: 50, y: 50 }, data: { label: 'Salesforce', sub: '35 Assets', icon: <Globe className="w-5 h-5" />, color: 'text-blue-400' } },
+  { id: 'mongodb', type: 'vendor', position: { x: 50, y: 150 }, data: { label: 'MongoDB', sub: '28 Assets', icon: <Database className="w-5 h-5" />, color: 'text-green-500' } },
+  { id: 'supabase', type: 'vendor', position: { x: 50, y: 250 }, data: { label: 'Supabase', sub: '42 Assets', icon: <Server className="w-5 h-5" />, color: 'text-emerald-400' } },
+  { id: 'legacy', type: 'vendor', position: { x: 50, y: 350 }, data: { label: 'Legacy Files', sub: '12 Assets', icon: <FileText className="w-5 h-5" />, color: 'text-orange-400' } },
+  { id: 'aod', type: 'processing', position: { x: 350, y: 200 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'aam', type: 'processing', position: { x: 600, y: 200 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 200 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'hexagon' } },
+  { id: 'agents', type: 'processing', position: { x: 1100, y: 200 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
 ];
 
-const initialEdges: Edge[] = []; // Edges will be generated dynamically
+const initialEdges: Edge[] = [
+  { id: 'e-sf-aod', source: 'salesforce', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-mg-aod', source: 'mongodb', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-sb-aod', source: 'supabase', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-lg-aod', source: 'legacy', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-aam-dcl', source: 'aam', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+];
 
 interface GraphViewProps {
   pipelineStep: number;
@@ -301,95 +249,51 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
   useEffect(() => {
     const isRunning = pipelineState === 'running';
-    const isStage1 = pipelineStep === 0;
+    const isComplete = pipelineState === 'complete';
 
-    // Animation Sequence for Stage 1
-    if (isRunning && isStage1) {
-      
-      // 1. AOD Glows (Immediate)
-      setNodes(nds => nds.map(n => n.id === 'aod' ? { ...n, data: { ...n.data, isGlowing: true } } : n));
+    setNodes((nds) => 
+      nds.map((node) => {
+        let active = false;
+        let complete = false;
 
-      // 2. Push lights out (Edges appear from AOD to assets) - Delay 500ms
-      const t1 = setTimeout(() => {
-        const newEdges = assetNodesConfig.map(asset => ({
-          id: `e-aod-${asset.id}`,
-          source: 'aod',
-          target: asset.id,
-          type: 'dataflow',
-          animated: true,
-          style: { stroke: '#0bcad9', strokeWidth: 2, opacity: 0.5 },
-          data: { active: true } // Start the particle animation
-        }));
-        setEdges(prev => [...prev, ...newEdges]);
-      }, 500);
+        if (isComplete) {
+           complete = true;
+        } else if (isRunning) {
+           if (pipelineStep === 0 && node.id === 'aod') active = true;
+           if (pipelineStep === 1 && node.id === 'aam') active = true;
+           if (pipelineStep === 2 && node.id === 'dcl') active = true;
+           if (pipelineStep === 3 && node.id === 'agents') active = true;
+           
+           if (pipelineStep > 0 && node.id === 'aod') complete = true;
+           if (pipelineStep > 1 && node.id === 'aam') complete = true;
+           if (pipelineStep > 2 && node.id === 'dcl') complete = true;
+        }
 
-      // 3. Organized Grid (Nodes move to grid) - Delay 1500ms
-      const t2 = setTimeout(() => {
-        setNodes(nds => nds.map((n, i) => {
-          if (n.type === 'vendor') {
-            // Calculate grid position (2 columns)
-            const col = i % 2;
-            const row = Math.floor(i / 2);
-            return {
-              ...n,
-              position: { x: 50 + (col * 140), y: 50 + (row * 110) },
-              style: { transform: 'rotate(0deg)', transition: 'all 1s ease-in-out' }, // Reset rotation, smooth move
-              data: { ...n.data, isOrganized: true }
-            };
-          }
-          return n;
-        }));
-      }, 1500);
+        return { ...node, data: { ...node.data, active, complete } };
+      })
+    );
 
-      // 4. Identify Unknowns (Turn ???? to labels) - Delay 2500ms
-      const t3 = setTimeout(() => {
-        setNodes(nds => nds.map(n => {
-          if (n.data.isUnknown) {
-             return { ...n, data: { ...n.data, isIdentified: true } };
-          }
-          return n;
-        }));
-      }, 2500);
-
-      // 5. Lights push back (Edges reverse? Or just new edges back?) - Let's just keep them connected but maybe pulse AOD
-      // And Show Catalogue
-      const t4 = setTimeout(() => {
-         setNodes(nds => nds.map(n => {
-           if (n.id === 'catalogue') return { ...n, hidden: false };
-           return n;
-         }));
+    setEdges((eds) => 
+      eds.map((edge) => {
+         let active = false;
+         let stroke = '#334155';
          
-         setEdges(eds => [
-           ...eds,
-           { id: 'e-aod-cat', source: 'aod', target: 'catalogue', type: 'dataflow', animated: true, style: { stroke: '#0bcad9', strokeWidth: 2 }, data: { active: true } }
-         ]);
-      }, 3500);
-
-      return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-        clearTimeout(t3);
-        clearTimeout(t4);
-      };
-    } else if (pipelineState === 'idle') {
-      // Reset to chaotic state if idle
-      setNodes(initialNodes);
-      setEdges([]);
-    }
-    
-    // Handle other stages visibility (show AAM, DCL, Agents when steps progress)
-    if (pipelineStep >= 1) {
-       setNodes(nds => nds.map(n => n.id === 'aam' ? { ...n, hidden: false } : n));
-       setEdges(eds => {
-         if (!eds.find(e => e.id === 'e-aod-aam')) {
-           return [...eds, { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', style: { stroke: '#334155' } }];
+         if (isComplete) {
+            stroke = '#0bcad9';
+         } else if (isRunning) {
+            if (pipelineStep === 0 && edge.target === 'aod') { active = true; stroke = '#0bcad9'; }
+            if (pipelineStep === 1 && edge.source === 'aod' && edge.target === 'aam') { active = true; stroke = '#0bcad9'; }
+            if (pipelineStep === 2 && edge.source === 'aam' && edge.target === 'dcl') { active = true; stroke = '#0bcad9'; }
+            if (pipelineStep === 3 && edge.source === 'dcl' && edge.target === 'agents') { active = true; stroke = '#0bcad9'; }
+            
+            if (pipelineStep > 0 && edge.target === 'aod') stroke = '#0bcad9';
+            if (pipelineStep > 1 && edge.target === 'aam') stroke = '#0bcad9';
+            if (pipelineStep > 2 && edge.target === 'dcl') stroke = '#0bcad9';
          }
-         return eds;
-       });
-    }
-    if (pipelineStep >= 2) setNodes(nds => nds.map(n => n.id === 'dcl' ? { ...n, hidden: false } : n));
-    if (pipelineStep >= 3) setNodes(nds => nds.map(n => n.id === 'agents' ? { ...n, hidden: false } : n));
 
+         return { ...edge, data: { ...edge.data, active }, style: { stroke, strokeWidth: 2 } };
+      })
+    );
   }, [pipelineStep, pipelineState, setNodes, setEdges]);
 
   const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
@@ -875,7 +779,7 @@ function StepperNavigation({
             className="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors font-semibold flex items-center gap-2"
           >
             <Play className="w-4 h-4" />
-            Full Demo
+            Run Full Pipeline
           </button>
 
           <button
