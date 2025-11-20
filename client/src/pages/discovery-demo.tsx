@@ -291,12 +291,16 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
         if (isComplete) {
            complete = true;
         } else if (isRunning) {
-           if (pipelineStep === 0 && node.id === 'aod') active = true;
+           // AOD remains active throughout the pipeline run
+           if (node.id === 'aod') {
+             active = true;
+           }
+           
            if (pipelineStep === 1 && node.id === 'aam') active = true;
            if (pipelineStep === 2 && node.id === 'dcl') active = true;
            if (pipelineStep === 3 && node.id === 'agents') active = true;
            
-           if (pipelineStep > 0 && node.id === 'aod') complete = true;
+           // AOD is never marked complete while running to keep it lit
            if (pipelineStep > 1 && node.id === 'aam') complete = true;
            if (pipelineStep > 2 && node.id === 'dcl') complete = true;
         }
