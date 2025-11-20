@@ -512,9 +512,57 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     }
   }, [pipelineState, pipelineStep, setNodes, setEdges]);
 
-  const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-    if (onNodeClick) onNodeClick(node.id, node.type || 'default');
-  }, [onNodeClick]);
+  useEffect(() => {
+    if (pipelineState === 'running' && pipelineStep > 0) {
+      // When entering a new step (other than discovery), trigger beam effect
+      let sourceId = '';
+      let targetId = '';
+      
+      if (pipelineStep === 1) { sourceId = 'aod'; targetId = 'aam'; }
+      if (pipelineStep === 2) { sourceId = 'aam'; targetId = 'dcl'; }
+      if (pipelineStep === 3) { sourceId = 'dcl'; targetId = 'agents'; }
+
+      if (sourceId && targetId) {
+        // 1. Start Beam
+        setEdges((eds) => eds.map(e => {
+           if (e.source === sourceId && e.target === targetId) {
+             return { ...e, data: { ...e.data, beaming: true } };
+           }
+           return e;
+        }));
+
+        // 2. After 500ms, Stop Beam & Flash Target Node
+        const timer = setTimeout(() => {
+          setEdges((eds) => eds.map(e => {
+             if (e.source === sourceId && e.target === targetId) {
+               return { ...e, data: { ...e.data, beaming: false } };
+             }
+             return e;
+          }));
+
+          setNodes((nds) => nds.map(n => {
+            if (n.id === targetId) {
+              return { ...n, data: { ...n.data, flash: true } };
+            }
+            return n;
+          }));
+
+          // 3. Turn off flash
+          setTimeout(() => {
+            setNodes((nds) => nds.map(n => {
+              if (n.id === targetId) {
+                return { ...n, data: { ...n.data, flash: false } };
+              }
+              return n;
+            }));
+          }, 500);
+
+        }, 500);
+
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [pipelineState, pipelineStep, setEdges, setNodes]);
 
   return (
     <div className="w-full h-full bg-slate-950/50 rounded-xl border border-slate-800/50 overflow-hidden relative">
@@ -546,6 +594,34 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 export default function DiscoveryDemoStandalone() {
   const [currentStage, setCurrentStage] = useState<Stage>(1);
   const [isRunningPipeline, setIsRunningPipeline] = useState(false);
+
+  useEffect(() => {
+    if (isRunningPipeline) {
+      const timers: NodeJS.Timeout[] = [];
+
+      // Sequence timing
+      // Stage 1 (Discovery): 0s -> 7s (Catalogue at 6s)
+      // Stage 2 (AAM): 7s -> 9s (Beam + Flash)
+      // Stage 3 (DCL): 9s -> 11s (Beam + Flash)
+      // Stage 4 (Agents): 11s -> 13s (Beam + Flash)
+      
+      if (currentStage === 1) {
+         timers.push(setTimeout(() => setCurrentStage(2), 7000));
+      }
+      if (currentStage === 2) {
+         timers.push(setTimeout(() => setCurrentStage(3), 2000));
+      }
+      if (currentStage === 3) {
+         timers.push(setTimeout(() => setCurrentStage(4), 2000));
+      }
+      if (currentStage === 4) {
+         // End pipeline run after animation
+         timers.push(setTimeout(() => setIsRunningPipeline(false), 2000));
+      }
+      
+      return () => timers.forEach(clearTimeout);
+    }
+  }, [isRunningPipeline, currentStage]);
 
   const handleRunFullPipeline = () => {
     setCurrentStage(1);
