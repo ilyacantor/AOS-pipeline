@@ -601,28 +601,8 @@ export default function DiscoveryDemoStandalone() {
 
   useEffect(() => {
     if (isRunningPipeline) {
-      const timers: NodeJS.Timeout[] = [];
-
-      // Sequence timing
-      // Stage 1 (Discovery): 0s -> 7s (Catalogue at 6s) - PAUSE HERE (User must click Continue)
-      // Stage 2 (AAM): 7s -> 9s (Beam + Flash)
-      // Stage 3 (DCL): 9s -> 11s (Beam + Flash)
-      // Stage 4 (Agents): 11s -> 13s (Beam + Flash)
-      
-      // NOTE: We removed the auto-advance for Stage 1 so it stops after discovery.
-      
-      if (currentStage === 2) {
-         timers.push(setTimeout(() => setCurrentStage(3), 2000));
-      }
-      if (currentStage === 3) {
-         timers.push(setTimeout(() => setCurrentStage(4), 2000));
-      }
-      if (currentStage === 4) {
-         // End pipeline run after animation
-         timers.push(setTimeout(() => setIsRunningPipeline(false), 2000));
-      }
-      
-      return () => timers.forEach(clearTimeout);
+      // No auto-advancement. The user must manually click "Continue" to proceed to the next stage.
+      // This ensures we pause at each stage (AOD, AAM, DCL, Agents) as requested.
     }
   }, [isRunningPipeline, currentStage]);
 
