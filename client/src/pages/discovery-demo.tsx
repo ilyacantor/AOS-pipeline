@@ -45,7 +45,8 @@ import {
   Sparkles, 
   Search,
   AlertTriangle,
-  HelpCircle
+  HelpCircle,
+  Table2
 } from 'lucide-react';
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -254,6 +255,7 @@ const initialNodes: Node[] = [
   { id: 'shadow2', type: 'vendor', position: { x: 50, y: 550 }, data: { label: 'Shadow IT', sub: 'Unknown AWS Acct', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500' } },
   { id: 'unknown', type: 'vendor', position: { x: 50, y: 650 }, data: { label: '????', sub: 'Unidentified Protocol', icon: <HelpCircle className="w-5 h-5" />, color: 'text-slate-400' } },
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'catalogue', type: 'vendor', position: { x: 350, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue', sub: 'Unified Inventory', icon: <Table2 className="w-5 h-5" />, color: 'text-purple-400' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'hexagon' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
@@ -267,6 +269,7 @@ const initialEdges: Edge[] = [
   { id: 'e-sh1-aod', source: 'shadow1', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-sh2-aod', source: 'shadow2', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-aod-cat', source: 'aod', target: 'catalogue', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
@@ -352,9 +355,18 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
   // Effect to handle node transformation during discovery
   useEffect(() => {
     if (pipelineState === 'running' && pipelineStep === 0) {
-      // Reset logic
+      // Reset edges beaming and hidden state for catalogue
+      setEdges((eds) => eds.map(e => {
+        if (e.id === 'e-aod-cat') return { ...e, hidden: true, data: { ...e.data, beaming: false } };
+        return { ...e, data: { ...e.data, beaming: false } };
+      }));
+      
+      // Reset catalogue node visibility
       setNodes((currentNodes) => 
         currentNodes.map((node) => {
+          if (node.id === 'catalogue') {
+            return { ...node, hidden: true, style: { ...node.style, opacity: 0 } };
+          }
           const initial = initialNodes.find((n) => n.id === node.id);
           if (initial && (node.id === 'unknown' || node.id === 'shadow1' || node.id === 'shadow2')) {
             return {
@@ -374,9 +386,6 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
           return { ...node, data: { ...node.data, flash: false } };
         })
       );
-      
-      // Reset edges beaming
-      setEdges((eds) => eds.map(e => ({ ...e, data: { ...e.data, beaming: false } })));
 
       const sequence = [
         { id: 'unknown', delay: 3000, newLabel: 'SAP', newSub: 'ERP System', newIcon: <Database className="w-5 h-5" />, newColor: 'text-blue-600' },
@@ -453,6 +462,43 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
         }, item.delay));
       });
+
+      // Materialize Catalogue (after 6s)
+      timeouts.push(setTimeout(() => {
+        setNodes((currentNodes) => 
+          currentNodes.map((node) => {
+            if (node.id === 'catalogue') {
+              return { 
+                ...node, 
+                hidden: false, 
+                style: { ...node.style, opacity: 1 },
+                data: { ...node.data, flash: true } // Flash on appear
+              };
+            }
+            return node;
+          })
+        );
+        
+        setEdges((eds) => eds.map(e => {
+          if (e.id === 'e-aod-cat') {
+            return { ...e, hidden: false, data: { ...e.data, active: true } }; // Reveal edge and make it active
+          }
+          return e;
+        }));
+
+        // Turn off flash for catalogue
+        setTimeout(() => {
+          setNodes((currentNodes) => 
+            currentNodes.map((node) => {
+              if (node.id === 'catalogue') {
+                return { ...node, data: { ...node.data, flash: false } };
+              }
+              return node;
+            })
+          );
+        }, 500);
+
+      }, 6000));
 
       return () => timeouts.forEach(clearTimeout);
     }
