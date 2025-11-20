@@ -321,6 +321,78 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     );
   }, [pipelineStep, pipelineState, setNodes, setEdges]);
 
+  // Effect to handle node transformation during discovery
+  useEffect(() => {
+    if (pipelineState === 'running' && pipelineStep === 0) {
+      // First, ensure we start with the initial state (reset if re-running)
+      setNodes((currentNodes) => 
+        currentNodes.map((node) => {
+          const initial = initialNodes.find((n) => n.id === node.id);
+          if (initial && (node.id === 'unknown' || node.id === 'shadow1' || node.id === 'shadow2')) {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                label: initial.data.label,
+                sub: initial.data.sub,
+                icon: initial.data.icon,
+                color: initial.data.color
+              }
+            };
+          }
+          return node;
+        })
+      );
+
+      // Schedule the transformation
+      const timer = setTimeout(() => {
+        setNodes((currentNodes) => 
+          currentNodes.map((node) => {
+            if (node.id === 'unknown') {
+              return { 
+                ...node, 
+                data: { 
+                  ...node.data, 
+                  label: 'SAP', 
+                  sub: 'ERP System', 
+                  icon: <Database className="w-5 h-5" />, 
+                  color: 'text-blue-600' 
+                } 
+              };
+            }
+            if (node.id === 'shadow1') {
+              return { 
+                ...node, 
+                data: { 
+                  ...node.data, 
+                  label: 'Hubspot', 
+                  sub: 'Marketing CRM', 
+                  icon: <Globe className="w-5 h-5" />, 
+                  color: 'text-orange-500' 
+                } 
+              };
+            }
+            if (node.id === 'shadow2') {
+              return { 
+                ...node, 
+                data: { 
+                  ...node.data, 
+                  label: 'Oracle', 
+                  sub: 'Financial DB', 
+                  icon: <Database className="w-5 h-5" />, 
+                  color: 'text-red-600' 
+                } 
+              };
+            }
+            return node;
+          })
+        );
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [pipelineState, pipelineStep, setNodes]);
+
   const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     if (onNodeClick) onNodeClick(node.id, node.type || 'default');
   }, [onNodeClick]);
