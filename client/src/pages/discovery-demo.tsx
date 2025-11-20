@@ -158,6 +158,17 @@ const DataFlowEdge = ({
           />
         </circle>
       )}
+      {data?.beaming && (
+        <path 
+          d={edgePath} 
+          stroke="#ffffff" 
+          strokeWidth="4"
+          fill="none"
+          strokeDasharray="10,10"
+          className="animate-[dash_0.5s_linear_infinite]"
+          style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8))' }}
+        />
+      )}
     </>
   );
 };
@@ -169,9 +180,10 @@ const edgeTypes = {
 const VendorNode = ({ data, selected }: NodeProps) => {
   return (
     <div className={cn(
-      "flex items-center gap-3 p-3 rounded-lg border bg-slate-900/90 w-52 transition-all shadow-lg",
+      "flex items-center gap-3 p-3 rounded-lg border bg-slate-900/90 w-52 transition-all shadow-lg relative",
       selected ? "border-primary shadow-[0_0_15px_-3px_rgba(11,202,217,0.4)]" : "border-slate-800 hover:border-slate-700",
-      data.active ? "border-primary/50 shadow-[0_0_10px_-3px_rgba(11,202,217,0.3)]" : ""
+      data.active ? "border-primary/50 shadow-[0_0_10px_-3px_rgba(11,202,217,0.3)]" : "",
+      data.flash ? "ring-4 ring-white shadow-[0_0_40px_rgba(255,255,255,0.9)] z-50 scale-105 duration-75" : "duration-500"
     )}>
       <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2" />
       <div className={cn("p-2 rounded bg-slate-950/50", data.color)}>
@@ -297,14 +309,23 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       eds.map((edge) => {
          let active = false;
          let scanning = false;
+         let beaming = false;
          let stroke = '#334155';
          
          if (isComplete) {
             stroke = '#0bcad9';
          } else if (isRunning) {
+            // Check for beaming edges
+            if (pipelineStep === 0) {
+              // Staggered beaming logic based on timing handled in useEffect mostly, 
+              // but here we can use a temporary state or rely on the useEffect to update edge data directly.
+              // Actually, let's just use the data property set by the separate useEffect for beaming
+              if (edge.data?.beaming) beaming = true;
+            }
+
             if (pipelineStep === 0 && edge.target === 'aod') { 
               active = true; 
-              scanning = true; // Enable reverse scan pulse
+              scanning = true; 
               stroke = '#0bcad9'; 
             }
             if (pipelineStep === 1 && edge.source === 'aod' && edge.target === 'aam') { active = true; stroke = '#0bcad9'; }
@@ -316,7 +337,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             if (pipelineStep > 2 && edge.target === 'dcl') stroke = '#0bcad9';
          }
 
-         return { ...edge, data: { ...edge.data, active, scanning }, style: { stroke, strokeWidth: 2 } };
+         return { ...edge, data: { ...edge.data, active, scanning, beaming }, style: { stroke, strokeWidth: 2 } };
       })
     );
   }, [pipelineStep, pipelineState, setNodes, setEdges]);
@@ -324,7 +345,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
   // Effect to handle node transformation during discovery
   useEffect(() => {
     if (pipelineState === 'running' && pipelineStep === 0) {
-      // First, ensure we start with the initial state (reset if re-running)
+      // Reset logic
       setNodes((currentNodes) => 
         currentNodes.map((node) => {
           const initial = initialNodes.find((n) => n.id === node.id);
@@ -336,62 +357,83 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                 label: initial.data.label,
                 sub: initial.data.sub,
                 icon: initial.data.icon,
-                color: initial.data.color
+                color: initial.data.color,
+                flash: false
               }
             };
           }
-          return node;
+          return { ...node, data: { ...node.data, flash: false } };
         })
       );
+      
+      // Reset edges beaming
+      setEdges((eds) => eds.map(e => ({ ...e, data: { ...e.data, beaming: false } })));
 
-      // Schedule the transformation
-      const timer = setTimeout(() => {
-        setNodes((currentNodes) => 
-          currentNodes.map((node) => {
-            if (node.id === 'unknown') {
-              return { 
-                ...node, 
-                data: { 
-                  ...node.data, 
-                  label: 'SAP', 
-                  sub: 'ERP System', 
-                  icon: <Database className="w-5 h-5" />, 
-                  color: 'text-blue-600' 
-                } 
-              };
-            }
-            if (node.id === 'shadow1') {
-              return { 
-                ...node, 
-                data: { 
-                  ...node.data, 
-                  label: 'Hubspot', 
-                  sub: 'Marketing CRM', 
-                  icon: <Globe className="w-5 h-5" />, 
-                  color: 'text-orange-500' 
-                } 
-              };
-            }
-            if (node.id === 'shadow2') {
-              return { 
-                ...node, 
-                data: { 
-                  ...node.data, 
-                  label: 'Oracle', 
-                  sub: 'Financial DB', 
-                  icon: <Database className="w-5 h-5" />, 
-                  color: 'text-red-600' 
-                } 
-              };
-            }
-            return node;
-          })
-        );
-      }, 3000);
+      const sequence = [
+        { id: 'unknown', delay: 3000, newLabel: 'SAP', newSub: 'ERP System', newIcon: <Database className="w-5 h-5" />, newColor: 'text-blue-600' },
+        { id: 'shadow1', delay: 4000, newLabel: 'Hubspot', newSub: 'Marketing CRM', newIcon: <Globe className="w-5 h-5" />, newColor: 'text-orange-500' },
+        { id: 'shadow2', delay: 5000, newLabel: 'Oracle', newSub: 'Financial DB', newIcon: <Database className="w-5 h-5" />, newColor: 'text-red-600' },
+      ];
 
-      return () => clearTimeout(timer);
+      const timeouts: NodeJS.Timeout[] = [];
+
+      sequence.forEach((item) => {
+        // Start Beam (500ms before transform)
+        timeouts.push(setTimeout(() => {
+          setEdges((eds) => eds.map(e => {
+             if (e.source === item.id && e.target === 'aod') {
+               return { ...e, data: { ...e.data, beaming: true } };
+             }
+             return e;
+          }));
+        }, item.delay - 500));
+
+        // Transform & Flash & Stop Beam
+        timeouts.push(setTimeout(() => {
+          setEdges((eds) => eds.map(e => {
+             if (e.source === item.id && e.target === 'aod') {
+               return { ...e, data: { ...e.data, beaming: false } };
+             }
+             return e;
+          }));
+
+          setNodes((currentNodes) => 
+            currentNodes.map((node) => {
+              if (node.id === item.id) {
+                return { 
+                  ...node, 
+                  data: { 
+                    ...node.data, 
+                    label: item.newLabel, 
+                    sub: item.newSub, 
+                    icon: item.newIcon, 
+                    color: item.newColor,
+                    flash: true
+                  } 
+                };
+              }
+              return node;
+            })
+          );
+          
+          // Turn off flash after 500ms
+          setTimeout(() => {
+            setNodes((currentNodes) => 
+              currentNodes.map((node) => {
+                if (node.id === item.id) {
+                  return { ...node, data: { ...node.data, flash: false } };
+                }
+                return node;
+              })
+            );
+          }, 500);
+
+        }, item.delay));
+      });
+
+      return () => timeouts.forEach(clearTimeout);
     }
-  }, [pipelineState, pipelineStep, setNodes]);
+  }, [pipelineState, pipelineStep, setNodes, setEdges]);
 
   const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     if (onNodeClick) onNodeClick(node.id, node.type || 'default');
