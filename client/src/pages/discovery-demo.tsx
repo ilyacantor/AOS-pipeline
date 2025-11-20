@@ -604,14 +604,13 @@ export default function DiscoveryDemoStandalone() {
       const timers: NodeJS.Timeout[] = [];
 
       // Sequence timing
-      // Stage 1 (Discovery): 0s -> 7s (Catalogue at 6s)
+      // Stage 1 (Discovery): 0s -> 7s (Catalogue at 6s) - PAUSE HERE (User must click Continue)
       // Stage 2 (AAM): 7s -> 9s (Beam + Flash)
       // Stage 3 (DCL): 9s -> 11s (Beam + Flash)
       // Stage 4 (Agents): 11s -> 13s (Beam + Flash)
       
-      if (currentStage === 1) {
-         timers.push(setTimeout(() => setCurrentStage(2), 7000));
-      }
+      // NOTE: We removed the auto-advance for Stage 1 so it stops after discovery.
+      
       if (currentStage === 2) {
          timers.push(setTimeout(() => setCurrentStage(3), 2000));
       }
