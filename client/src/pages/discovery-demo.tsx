@@ -564,6 +564,10 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     }
   }, [pipelineState, pipelineStep, setEdges, setNodes]);
 
+  const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    if (onNodeClick) onNodeClick(node.id, node.type || 'default');
+  }, [onNodeClick]);
+
   return (
     <div className="w-full h-full bg-slate-950/50 rounded-xl border border-slate-800/50 overflow-hidden relative">
       <ReactFlow
