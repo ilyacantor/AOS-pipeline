@@ -183,7 +183,9 @@ const VendorNode = ({ data, selected }: NodeProps) => {
       "flex items-center gap-3 p-3 rounded-lg border bg-slate-900/90 w-52 transition-all shadow-lg relative",
       selected ? "border-primary shadow-[0_0_15px_-3px_rgba(11,202,217,0.4)]" : "border-slate-800 hover:border-slate-700",
       data.active ? "border-primary/50 shadow-[0_0_10px_-3px_rgba(11,202,217,0.3)]" : "",
-      data.flash ? "ring-4 ring-white shadow-[0_0_40px_rgba(255,255,255,0.9)] z-50 scale-105 duration-75" : "duration-500"
+      data.flash ? "ring-4 ring-white shadow-[0_0_40px_rgba(255,255,255,0.9)] z-50 scale-105 duration-75" : "duration-500",
+      data.glowRed ? "border-red-500 shadow-[0_0_20px_-3px_rgba(239,68,68,0.6)]" : "",
+      data.glowGreen ? "border-green-500 shadow-[0_0_20px_-3px_rgba(34,197,94,0.6)]" : ""
     )}>
       <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2" />
       <div className={cn("p-2 rounded bg-slate-950/50", data.color)}>
@@ -208,26 +210,27 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
           "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md",
           isHex ? "w-32 h-32" : "w-32 h-32 rounded-full",
           selected ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "border-slate-700",
-          data.active ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "",
+          // Enhanced glow for AOD
+          data.active ? "border-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.6)] bg-cyan-950/30" : "",
           data.complete ? "border-green-500 shadow-[0_0_15px_-5px_rgba(34,197,94,0.5)]" : ""
         )}
         style={isHex ? { clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" } : {}}
       >
         <div className={cn(
             "transition-colors duration-300",
-            data.active ? "text-white scale-110" : "text-slate-400",
+            data.active ? "text-cyan-200 scale-110" : "text-slate-400",
             data.complete ? "text-green-400" : ""
         )}>
           {data.icon}
         </div>
         <div className="text-center z-10">
-          <div className="text-xs font-bold text-slate-200">{data.label}</div>
-          <div className="text-[9px] text-slate-500 uppercase tracking-wider">{data.sub}</div>
+          <div className={cn("text-xs font-bold", data.active ? "text-cyan-100" : "text-slate-200")}>{data.label}</div>
+          <div className={cn("text-[9px] uppercase tracking-wider", data.active ? "text-cyan-300/70" : "text-slate-500")}>{data.sub}</div>
         </div>
         
         {data.active && (
            <div className={cn(
-             "absolute inset-0 z-0 animate-ping opacity-20 bg-primary",
+             "absolute inset-0 z-0 animate-ping opacity-20 bg-cyan-400",
              isHex ? "" : "rounded-full"
            )} style={isHex ? { clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" } : {}} />
         )}
@@ -362,7 +365,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                 sub: initial.data.sub,
                 icon: initial.data.icon,
                 color: initial.data.color,
-                flash: false
+                flash: false,
+                glowRed: false,
+                glowGreen: false
               }
             };
           }
@@ -382,6 +387,18 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       const timeouts: NodeJS.Timeout[] = [];
 
       sequence.forEach((item) => {
+        // Start Red Glow (1s before transform)
+        timeouts.push(setTimeout(() => {
+          setNodes((currentNodes) => 
+            currentNodes.map((node) => {
+              if (node.id === item.id) {
+                return { ...node, data: { ...node.data, glowRed: true } };
+              }
+              return node;
+            })
+          );
+        }, item.delay - 1000));
+
         // Start Beam (500ms before transform)
         timeouts.push(setTimeout(() => {
           setEdges((eds) => eds.map(e => {
@@ -392,7 +409,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
           }));
         }, item.delay - 500));
 
-        // Transform & Flash & Stop Beam
+        // Transform & Flash & Stop Beam & Switch to Green Glow
         timeouts.push(setTimeout(() => {
           setEdges((eds) => eds.map(e => {
              if (e.source === item.id && e.target === 'aod') {
@@ -412,7 +429,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                     sub: item.newSub, 
                     icon: item.newIcon, 
                     color: item.newColor,
-                    flash: true
+                    flash: true,
+                    glowRed: false,
+                    glowGreen: true
                   } 
                 };
               }
@@ -420,7 +439,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             })
           );
           
-          // Turn off flash after 500ms
+          // Turn off flash after 500ms (keep green glow)
           setTimeout(() => {
             setNodes((currentNodes) => 
               currentNodes.map((node) => {
