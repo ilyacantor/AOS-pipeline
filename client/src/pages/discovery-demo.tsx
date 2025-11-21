@@ -65,6 +65,7 @@ import snowflakeLogo from '../assets/logos/snowflake_1763689304030.png';
 import supabaseLogo from '../assets/logos/supabase_1763689304030.png';
 
 import dclVideo from '../assets/dcl-video.mp4';
+import dclGraph from '../assets/dcl-graph.png';
 
 // Utility function
 function cn(...inputs: ClassValue[]) {
@@ -336,6 +337,16 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
               />
             </div>
           )}
+
+          {data.bottomImage && (
+            <div className="w-48 h-28 bg-slate-900/80 rounded-lg border border-slate-700 overflow-hidden shadow-lg backdrop-blur-sm">
+              <img 
+                src={data.bottomImage} 
+                alt="Ontology Graph" 
+                className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -384,7 +395,7 @@ const initialNodes: Node[] = [
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'vendor', position: { x: 350, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue', sub: 'Unified Inventory', icon: <Table2 className="w-5 h-5" />, color: 'text-purple-400' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomMedia: dclVideo, bottomLabel: 'Ontology Graph' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'processing', position: { x: 1100, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   
