@@ -318,7 +318,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
       )}
 
       {/* Bottom Attachments (Label & Media) */}
-      {(data.bottomLabel || data.bottomMedia) && (
+      {(data.bottomLabel || data.bottomMedia || (data.bottomImage && data.showBottom)) && (
         <div className="absolute top-full mt-4 flex flex-col items-center gap-2 z-20">
           {data.bottomLabel && (
             <div className="whitespace-nowrap px-3 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
@@ -339,7 +339,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
             </div>
           )}
 
-          {data.bottomImage && (
+          {data.bottomImage && data.showBottom && (
             <div className="w-48 h-28 bg-slate-900/80 rounded-lg border border-slate-700 overflow-hidden shadow-lg backdrop-blur-sm">
               <img 
                 src={data.bottomImage} 
@@ -442,7 +442,7 @@ const initialNodes: Node[] = [
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'processing', position: { x: 1100, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   
@@ -779,6 +779,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
           currentNodes.map((node) => {
             if (node.id === 'catalogue') {
               return { ...node, hidden: false, style: { ...node.style, opacity: 1 } };
+            }
+            if (node.id === 'dcl') {
+               return { ...node, data: { ...node.data, showBottom: true } };
             }
             return node;
           })
