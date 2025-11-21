@@ -29,6 +29,7 @@ import {
   EdgeProps,
   BaseEdge,
   getSmoothStepPath,
+  getStraightPath,
   useReactFlow
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -147,7 +148,8 @@ const DataFlowEdge = ({
   markerEnd,
   data
 }: EdgeProps) => {
-  const [edgePath] = getSmoothStepPath({
+  const pathFn = data?.pathType === 'straight' ? getStraightPath : getSmoothStepPath;
+  const [edgePath] = pathFn({
     sourceX,
     sourceY,
     sourcePosition,
@@ -442,7 +444,7 @@ const PromptNode = ({ data, selected }: NodeProps) => {
       <div className="w-full bg-slate-950/50 rounded-lg p-3 border border-slate-800/50">
         <div className="flex items-center gap-2 text-xs text-slate-400 italic">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 animate-pulse"></span>
-          Ask a question...
+          Action or Question...
         </div>
       </div>
 
@@ -563,7 +565,7 @@ const initialNodes: Node[] = [
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'prompt', position: { x: 1150, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   { id: 'analytics', type: 'analytics', position: { x: 1150, y: 550 }, data: { visible: false } },
@@ -591,7 +593,7 @@ const initialEdges: Edge[] = [
   { id: 'e-sh1-aod', source: 'shadow1', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-sh2-aod', source: 'shadow2', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 }, zIndex: 5 },
+  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 }, zIndex: 5, data: { pathType: 'straight' } },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
