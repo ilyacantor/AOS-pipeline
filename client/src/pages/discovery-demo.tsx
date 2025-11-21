@@ -462,37 +462,62 @@ const PromptNode = ({ data, selected }: NodeProps) => {
 const AnalyticsNode = ({ data, selected }: NodeProps) => {
   return (
     <div className={cn(
-      "relative w-40 h-40 transition-all duration-500",
-      data.visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+      "flex flex-col items-center gap-2 transition-all duration-700 ease-out",
+      data.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
     )}>
-      <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 !-left-4" />
-      
-      {/* Report Page (Back) */}
-      <div className="absolute top-0 right-0 w-24 h-32 bg-slate-800 border border-slate-600 rounded-md shadow-lg transform rotate-6 p-2 flex flex-col gap-2 transition-all duration-500 hover:rotate-0 hover:z-50 hover:scale-110">
-         <div className="w-1/2 h-2 bg-slate-600 rounded"></div>
-         <div className="w-full h-1 bg-slate-700 rounded"></div>
-         <div className="w-full h-1 bg-slate-700 rounded"></div>
-         <div className="w-3/4 h-1 bg-slate-700 rounded"></div>
-         <div className="w-full h-1 bg-slate-700 rounded"></div>
-         <div className="w-full h-1 bg-slate-700 rounded"></div>
+       {/* Pill Label */}
+      <div className="whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
+        Analytics Dashboard
       </div>
 
-      {/* Bar Chart (Middle) */}
-      <div className="absolute bottom-0 left-4 w-28 h-24 bg-slate-900/90 border border-slate-600 rounded-md shadow-lg backdrop-blur-sm p-2 flex items-end justify-around gap-1 transform -rotate-3 transition-all duration-500 hover:rotate-0 hover:z-50 hover:scale-110">
-         <div className="w-3 h-10 bg-cyan-500/60 rounded-t"></div>
-         <div className="w-3 h-16 bg-cyan-500/80 rounded-t"></div>
-         <div className="w-3 h-8 bg-cyan-500/50 rounded-t"></div>
-         <div className="w-3 h-12 bg-cyan-500/70 rounded-t"></div>
-      </div>
+      {/* Dashboard Card */}
+      <div className={cn(
+        "relative w-64 h-40 rounded-xl overflow-hidden shadow-2xl bg-slate-900 border-2 border-cyan-500/30 group cursor-pointer hover:scale-105 transition-transform duration-300",
+        selected ? "border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)]" : ""
+      )}>
+        <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-1.5" />
+        
+        {/* Dashboard Header */}
+        <div className="absolute top-0 left-0 right-0 h-8 bg-slate-800 border-b border-slate-700 flex items-center px-3 gap-2">
+           <div className="w-2 h-2 rounded-full bg-red-500"></div>
+           <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+           <div className="w-2 h-2 rounded-full bg-green-500"></div>
+           <div className="ml-auto text-[8px] text-slate-400">DASHBOARD_V2</div>
+        </div>
 
-      {/* Pie Chart (Front) */}
-      <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-slate-900 border border-slate-600 rounded-full shadow-xl flex items-center justify-center transition-all duration-500 hover:scale-110 hover:z-50">
-        <svg viewBox="0 0 32 32" className="w-full h-full p-1">
-           <circle cx="16" cy="16" r="16" fill="#0f172a" />
-           <path d="M16 16 L32 16 A16 16 0 0 1 16 32 Z" fill="#0ea5e9" />
-           <path d="M16 16 L16 32 A16 16 0 0 1 0.3 12.5 Z" fill="#10b981" />
-           <path d="M16 16 L0.3 12.5 A16 16 0 0 1 32 16 Z" fill="#f59e0b" />
-        </svg>
+        {/* Dashboard Body */}
+        <div className="absolute top-8 inset-x-0 bottom-0 p-2 grid grid-cols-2 gap-2 bg-slate-900/50">
+           {/* Chart 1 */}
+           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 flex flex-col justify-end gap-0.5 items-center">
+              <div className="w-full flex items-end justify-around h-full px-1">
+                <div className="w-1.5 bg-cyan-500/40 h-[40%] rounded-t-[1px]"></div>
+                <div className="w-1.5 bg-cyan-500/60 h-[70%] rounded-t-[1px]"></div>
+                <div className="w-1.5 bg-cyan-500/80 h-[50%] rounded-t-[1px]"></div>
+                <div className="w-1.5 bg-cyan-500 h-[90%] rounded-t-[1px]"></div>
+              </div>
+           </div>
+           
+           {/* Chart 2 */}
+           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 relative">
+              <div className="absolute inset-1 rounded-full border-2 border-purple-500/30 border-t-purple-500"></div>
+              <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-purple-300">85%</div>
+           </div>
+
+           {/* Metric 1 */}
+           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 flex flex-col justify-center px-2">
+              <div className="text-[6px] text-slate-400 uppercase">Revenue</div>
+              <div className="text-[10px] font-bold text-white">$1.2M</div>
+           </div>
+
+           {/* Metric 2 */}
+           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 flex flex-col justify-center px-2">
+              <div className="text-[6px] text-slate-400 uppercase">Risk</div>
+              <div className="text-[10px] font-bold text-red-400">High</div>
+           </div>
+        </div>
+        
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 transition-colors pointer-events-none"></div>
       </div>
     </div>
   );
