@@ -1032,6 +1032,8 @@ export default function DiscoveryDemoStandalone() {
   const pipelineStep = currentStage - 1;
   const pipelineState = isRunningPipeline ? "running" : "idle";
 
+  const [showDetails, setShowDetails] = useState(false);
+
   return (
     <div className="flex flex-col h-screen bg-slate-950 text-white" style={{ fontFamily: 'Quicksand, sans-serif' }}>
       {/* Top Bar */}
@@ -1067,15 +1069,23 @@ export default function DiscoveryDemoStandalone() {
             />
         </div>
 
-        {/* Floating Details Panel - Top Right */}
-        <div className="absolute top-6 right-6 w-96 max-h-[calc(100%-140px)] overflow-y-auto bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-xl shadow-2xl z-10 flex flex-col transition-all duration-300">
+        {/* Details Overlay - Toggled */}
+        {showDetails && (
+          <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[600px] max-h-[60vh] overflow-y-auto bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-xl shadow-2xl z-10 flex flex-col transition-all duration-300 animate-in slide-in-from-bottom-4 fade-in">
              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Stage Details</h3>
+                  <button onClick={() => setShowDetails(false)} className="text-slate-500 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                </div>
                 {currentStage === 1 && <Stage1Content totalCounts={totalCounts} />}
                 {currentStage === 2 && <Stage2Content />}
                 {currentStage === 3 && <Stage3Content />}
                 {currentStage === 4 && <Stage4Content />}
              </div>
-        </div>
+          </div>
+        )}
 
         {/* Floating Controls - Bottom Center */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur-md border border-slate-700 rounded-2xl shadow-2xl z-20 px-6 py-3 w-auto max-w-[90vw]">
@@ -1088,6 +1098,8 @@ export default function DiscoveryDemoStandalone() {
               onContinuePipeline={handleContinuePipeline}
               onEndDemo={handleEndDemo}
               isRunningPipeline={isRunningPipeline}
+              showDetails={showDetails}
+              onToggleDetails={() => setShowDetails(!showDetails)}
             />
         </div>
 
@@ -1365,6 +1377,8 @@ function StepperNavigation({
   onContinuePipeline,
   onEndDemo,
   isRunningPipeline,
+  showDetails,
+  onToggleDetails,
 }: {
   currentStage: Stage;
   onStageClick: (stage: Stage) => void;
@@ -1374,6 +1388,8 @@ function StepperNavigation({
   onContinuePipeline: () => void;
   onEndDemo: () => void;
   isRunningPipeline: boolean;
+  showDetails: boolean;
+  onToggleDetails: () => void;
 }) {
   const stages = [
     { num: 1, label: 'AOD' },
@@ -1419,6 +1435,18 @@ function StepperNavigation({
 
       {/* Action Buttons - Horizontal */}
       <div className="flex items-center gap-3">
+        {/* Details Toggle */}
+        <button
+           onClick={onToggleDetails}
+           className={`p-2 rounded-md transition-colors text-xs font-semibold flex items-center justify-center gap-2 ${
+             showDetails ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+           }`}
+           title="Toggle Details"
+        >
+          <FileText className="w-4 h-4" />
+        </button>
+
+        <div className="w-px h-6 bg-slate-700"></div>
         {isRunningPipeline ? (
           <>
             <div className="flex items-center gap-2 text-xs text-cyan-400 animate-pulse px-2 whitespace-nowrap">
