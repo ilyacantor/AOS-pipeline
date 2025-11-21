@@ -266,12 +266,27 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       )}
 
-      {/* Bottom Label Attachment (DCL Ontology Graph) */}
-      {data.bottomLabel && (
-        <div className="absolute top-full mt-2 whitespace-nowrap">
-          <div className="px-3 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
-            {data.bottomLabel}
-          </div>
+      {/* Bottom Attachments (Label & Media) */}
+      {(data.bottomLabel || data.bottomMedia) && (
+        <div className="absolute top-full mt-4 flex flex-col items-center gap-2 z-20">
+          {data.bottomLabel && (
+            <div className="whitespace-nowrap px-3 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
+              {data.bottomLabel}
+            </div>
+          )}
+          
+          {data.bottomMedia && (
+            <div className="w-32 h-20 bg-slate-900/80 rounded-lg border border-slate-700 overflow-hidden shadow-lg backdrop-blur-sm">
+              <video 
+                src={data.bottomMedia} 
+                className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
