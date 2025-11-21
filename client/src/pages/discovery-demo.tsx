@@ -602,7 +602,7 @@ const initialEdges: Edge[] = [
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-nlp', source: 'dcl', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-ag-an', source: 'agents', target: 'analytics', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 }, hidden: true },
+  { id: 'e-dcl-an', source: 'dcl', target: 'analytics', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 }, hidden: true },
   // Logo Connections (From AAM Top to Logos Bottom)
   { id: 'e-aam-l1', source: 'aam', sourceHandle: 'top-source', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
   { id: 'e-aam-l2', source: 'aam', sourceHandle: 'top-source', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
@@ -956,6 +956,10 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
            if (pipelineStep === 3 && e.source === 'dcl' && e.target === 'nlp') {
               return { ...e, data: { ...e.data, beaming: true } };
            }
+           // Also beam to Analytics if stepping to 3
+           if (pipelineStep === 3 && e.source === 'dcl' && e.target === 'analytics') {
+              return { ...e, hidden: false, data: { ...e.data, beaming: true } };
+           }
            return e;
         }));
 
@@ -968,6 +972,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
              if (pipelineStep === 3 && e.source === 'dcl' && e.target === 'nlp') {
                 return { ...e, data: { ...e.data, beaming: false } };
              }
+             if (pipelineStep === 3 && e.source === 'dcl' && e.target === 'analytics') {
+                return { ...e, data: { ...e.data, beaming: false, active: true } };
+             }
              return e;
           }));
 
@@ -977,6 +984,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             }
             if (pipelineStep === 3 && n.id === 'nlp') {
                return { ...n, data: { ...n.data, flash: true } };
+            }
+            if (pipelineStep === 3 && n.id === 'analytics') {
+               return { ...n, data: { ...n.data, visible: true, flash: true } };
             }
             return n;
           }));
@@ -990,42 +1000,15 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
               if (pipelineStep === 3 && n.id === 'nlp') {
                  return { ...n, data: { ...n.data, flash: false } };
               }
+              if (pipelineStep === 3 && n.id === 'analytics') {
+                 return { ...n, data: { ...n.data, flash: false } };
+              }
               return n;
             }));
           }, 500);
+          
+          // (Removed old delayed logic for analytics)
 
-          // SPECIAL: If target is Agents (Step 3), reveal Analytics after 1.5s
-          if (pipelineStep === 3) {
-             setTimeout(() => {
-                // Reveal Edge
-                setEdges((eds) => eds.map(e => {
-                  if (e.id === 'e-ag-an') {
-                    return { ...e, hidden: false, data: { ...e.data, beaming: true } };
-                  }
-                  return e;
-                }));
-
-                // Reveal Node shortly after edge starts beaming
-                setTimeout(() => {
-                   setNodes((nds) => nds.map(n => {
-                     if (n.id === 'analytics') {
-                       return { ...n, data: { ...n.data, visible: true } };
-                     }
-                     return n;
-                   }));
-                   
-                   // Stop beaming on edge
-                   setEdges((eds) => eds.map(e => {
-                    if (e.id === 'e-ag-an') {
-                      return { ...e, data: { ...e.data, beaming: false, active: true } };
-                    }
-                    return e;
-                  }));
-
-                }, 500);
-
-             }, 1500);
-          }
 
           // SPECIAL: If target is AAM (Step 1), reveal logos 1s after flash starts
           if (targetId === 'aam') {
