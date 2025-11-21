@@ -66,7 +66,7 @@ import supabaseLogo from '../assets/logos/supabase_1763689304030.png';
 
 import dclVideo from '../assets/dcl-video.mp4';
 import dclGraph from '../assets/dcl-graph.png';
-import catalogueImage from '@assets/generated_images/futuristic_asset_catalogue_ui_card.png';
+import catalogueImage from '@assets/generated_images/professional_enterprise_asset_catalogue_ui_dashboard.png';
 
 // Utility function
 function cn(...inputs: ClassValue[]) {
