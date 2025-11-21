@@ -1053,11 +1053,11 @@ export default function DiscoveryDemoStandalone() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Graph Panel - 2/3 width */}
-        <div className="w-2/3 border-r border-slate-800 p-8 bg-slate-950 overflow-hidden">
-          <h2 className="text-2xl font-bold text-white mb-8">Pipeline Graph</h2>
-          <div className="flex-1 h-full">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Graph Panel - Full width */}
+        <div className="flex-1 bg-slate-950 overflow-hidden relative">
+          <h2 className="absolute top-6 left-8 text-2xl font-bold text-white z-10 pointer-events-none opacity-50">Pipeline Graph</h2>
+          <div className="w-full h-full">
             <GraphView 
               pipelineStep={pipelineStep} 
               pipelineState={pipelineState}
@@ -1066,27 +1066,30 @@ export default function DiscoveryDemoStandalone() {
           </div>
         </div>
 
-        {/* Detail Panel - 1/3 width */}
-        <div className="w-1/3 p-8 bg-slate-900 overflow-auto">
-          {currentStage === 1 && <Stage1Content totalCounts={totalCounts} />}
-          {currentStage === 2 && <Stage2Content />}
-          {currentStage === 3 && <Stage3Content />}
-          {currentStage === 4 && <Stage4Content />}
-        </div>
-      </div>
+        {/* Bottom Panel (Former Sidebar + Nav) */}
+        <div className="h-[300px] flex bg-slate-900 border-t border-slate-800 shadow-[0_-5px_20px_rgba(0,0,0,0.5)] z-20">
+          {/* Stage Content Area */}
+          <div className="flex-1 p-6 overflow-y-auto border-r border-slate-800">
+            {currentStage === 1 && <Stage1Content totalCounts={totalCounts} />}
+            {currentStage === 2 && <Stage2Content />}
+            {currentStage === 3 && <Stage3Content />}
+            {currentStage === 4 && <Stage4Content />}
+          </div>
 
-      {/* Bottom Navigation */}
-      <div className="bg-slate-900 border-t border-slate-800 px-6 py-6">
-        <StepperNavigation
-          currentStage={currentStage}
-          onStageClick={handleStageClick}
-          onBack={handleBack}
-          onNext={handleNext}
-          onRunFullPipeline={handleRunFullPipeline}
-          onContinuePipeline={handleContinuePipeline}
-          onEndDemo={handleEndDemo}
-          isRunningPipeline={isRunningPipeline}
-        />
+          {/* Controls Area */}
+          <div className="w-[320px] flex-shrink-0 p-6 bg-slate-900 flex flex-col">
+            <StepperNavigation
+              currentStage={currentStage}
+              onStageClick={handleStageClick}
+              onBack={handleBack}
+              onNext={handleNext}
+              onRunFullPipeline={handleRunFullPipeline}
+              onContinuePipeline={handleContinuePipeline}
+              onEndDemo={handleEndDemo}
+              isRunningPipeline={isRunningPipeline}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1112,69 +1115,77 @@ function Stage1Content({ totalCounts }: { totalCounts: any }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white mb-2 break-words">AOD Discovery — Assets & Risk</h2>
-        <p className="text-xs text-slate-400 break-words">Automatically discovered assets across the demo tenant</p>
+    <div className="h-full flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-white">AOD Discovery — Assets & Risk</h2>
+          <p className="text-xs text-slate-400">Automatically discovered assets across the demo tenant</p>
+        </div>
+        <div className="flex gap-3 text-xs">
+          <div className="px-3 py-1.5 bg-slate-800 rounded border border-slate-700">
+            <span className="text-slate-400 mr-2">Assets:</span>
+            <span className="text-white font-bold">{totalCounts.total}</span>
+          </div>
+          <div className="px-3 py-1.5 bg-green-500/10 rounded border border-green-500/30">
+             <span className="text-slate-400 mr-2">Ready:</span>
+             <span className="text-green-400 font-bold">{totalCounts.ready}</span>
+          </div>
+          <div className="px-3 py-1.5 bg-orange-500/10 rounded border border-orange-500/30">
+             <span className="text-slate-400 mr-2">Parked:</span>
+             <span className="text-orange-400 font-bold">{totalCounts.parked}</span>
+          </div>
+          <div className="px-3 py-1.5 bg-red-500/10 rounded border border-red-500/30">
+             <span className="text-slate-400 mr-2">Shadow:</span>
+             <span className="text-red-400 font-bold">{totalCounts.shadowIT}</span>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-3">
-          <div className="text-xl font-bold text-white">{totalCounts.total}</div>
-          <div className="text-xs text-slate-400 mt-1">Assets</div>
-        </div>
-        <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-          <div className="text-xl font-bold text-green-400">{totalCounts.ready}</div>
-          <div className="text-xs text-slate-400 mt-1">Ready</div>
-        </div>
-        <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
-          <div className="text-xl font-bold text-orange-400">{totalCounts.parked}</div>
-          <div className="text-xs text-slate-400 mt-1">Parked</div>
-        </div>
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
-          <div className="text-xl font-bold text-red-400">{totalCounts.shadowIT}</div>
-          <div className="text-xs text-slate-400 mt-1 break-words">Shadow / High-Risk</div>
-        </div>
-      </div>
-
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-x-auto">
-        <table className="w-full min-w-max">
-          <thead className="bg-slate-900 border-b border-slate-700">
-            <tr>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Asset</th>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Vendor</th>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Kind</th>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Env</th>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Risk</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-700">
-            {demoAssets.map((asset) => {
-              const risk = getRiskLevel(asset.state);
-              const vendorName = getVendorDisplayName(asset.vendor);
-              
-              return (
-                <tr key={asset.id} className="hover:bg-slate-700/50">
-                  <td className="px-2 py-2 text-xs text-white truncate max-w-[120px]" title={asset.name}>{asset.name}</td>
-                  <td className="px-2 py-2 text-xs">
-                    <span style={{ color: getVendorColor(asset.vendor) }}>{vendorName}</span>
-                  </td>
-                  <td className="px-2 py-2 text-xs text-slate-300 capitalize">{asset.kind}</td>
-                  <td className="px-2 py-2 text-xs text-slate-300 uppercase">{asset.environment}</td>
-                  <td className={`px-2 py-2 text-xs font-semibold ${getRiskColor(risk)}`}>{risk}</td>
+      <div className="flex-1 flex gap-4 min-h-0">
+        <div className="flex-1 bg-slate-800 border border-slate-700 rounded-lg overflow-hidden flex flex-col">
+          <div className="overflow-y-auto flex-1">
+            <table className="w-full min-w-max">
+              <thead className="bg-slate-900 border-b border-slate-700 sticky top-0 z-10">
+                <tr>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Asset</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Vendor</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Kind</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Env</th>
+                  <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Risk</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 space-y-2">
-        <div className="text-xs text-slate-400 break-words">
-          <span className="font-semibold text-orange-400">Normally:</span> spreadsheets, interviews, and guesswork to find what's running.
+              </thead>
+              <tbody className="divide-y divide-slate-700">
+                {demoAssets.map((asset) => {
+                  const risk = getRiskLevel(asset.state);
+                  const vendorName = getVendorDisplayName(asset.vendor);
+                  
+                  return (
+                    <tr key={asset.id} className="hover:bg-slate-700/50">
+                      <td className="px-3 py-2 text-xs text-white truncate max-w-[180px]" title={asset.name}>{asset.name}</td>
+                      <td className="px-3 py-2 text-xs">
+                        <span style={{ color: getVendorColor(asset.vendor) }}>{vendorName}</span>
+                      </td>
+                      <td className="px-3 py-2 text-xs text-slate-300 capitalize">{asset.kind}</td>
+                      <td className="px-3 py-2 text-xs text-slate-300 uppercase">{asset.environment}</td>
+                      <td className={`px-3 py-2 text-xs font-semibold ${getRiskColor(risk)}`}>{risk}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="text-xs text-cyan-400 break-words">
-          <span className="font-semibold">Here:</span> AOS uses log & config telemetry and AI classifiers to discover and risk-score assets.
+
+        <div className="w-64 bg-slate-800 border border-slate-700 rounded-lg p-4 flex flex-col justify-center gap-4 h-fit">
+          <div className="text-xs text-slate-400 leading-relaxed">
+            <span className="font-semibold text-orange-400 block mb-1">Normally:</span> 
+            Spreadsheets, interviews, and guesswork to find what's running.
+          </div>
+          <div className="h-px bg-slate-700"></div>
+          <div className="text-xs text-cyan-400 leading-relaxed">
+            <span className="font-semibold block mb-1">With AOS:</span> 
+            Uses log & config telemetry and AI classifiers to discover and risk-score assets.
+          </div>
         </div>
       </div>
     </div>
@@ -1186,71 +1197,76 @@ function Stage2Content() {
     {
       vendor: 'Salesforce',
       color: '#0BCAD9',
-      auth: 'OAuth2, scopes: api, refresh_token, offline_access',
-      contract: 'API v59.0, endpoints: /sobjects/Account, /sobjects/Opportunity',
-      details: 'Rate limits: 100 req/s, exponential backoff with jitter',
+      auth: 'OAuth2, scopes: api, refresh_token',
+      contract: 'API v59.0, /sobjects/Account',
+      details: '100 req/s, exp. backoff',
     },
     {
       vendor: 'MongoDB',
       color: '#10B981',
       auth: 'TLS SRV, vault credentials',
-      contract: 'Collections: users, events, read preference: secondaryPreferred',
-      details: 'Connection pooling: max 20, min 5, timeout 30s',
+      contract: 'Collections: users, events',
+      details: 'Pool: max 20, timeout 30s',
     },
     {
       vendor: 'Supabase',
       color: '#A855F7',
-      auth: 'Postgres URL, schema: public, RLS awareness',
-      contract: 'Connection mode: PgBouncer session, max 10 connections',
-      details: 'Tables: customers, invoices, usage_events',
+      auth: 'Postgres URL, RLS aware',
+      contract: 'PgBouncer session mode',
+      details: 'Tables: customers, invoices',
     },
     {
       vendor: 'Legacy Files',
       color: '#F97316',
-      auth: 'S3 bucket, IAM role credentials, SSE-S3 encryption',
-      contract: 'File pattern: *.csv, schedule: daily at 02:00 UTC',
-      details: 'Buckets: customer-exports, legacy-backups, retention: 90 days',
+      auth: 'S3 bucket, IAM role',
+      contract: '*.csv, daily at 02:00 UTC',
+      details: 'Retention: 90 days',
     },
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white mb-2 break-words">AAM Connections — Connectors</h2>
-        <p className="text-xs text-slate-400 break-words">Adaptive API Mesh connector configurations</p>
+    <div className="h-full flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-white">AAM Connections — Connectors</h2>
+          <p className="text-xs text-slate-400">Adaptive API Mesh connector configurations</p>
+        </div>
+        <div className="px-3 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-lg">
+          <div className="text-xs text-cyan-300">
+            <span className="font-semibold mr-1">AI Config:</span> 
+            Auto-selects auth flows, scopes, timeouts.
+          </div>
+        </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-3 overflow-y-auto">
         {connectors.map((connector) => (
-          <div key={connector.vendor} className="bg-slate-800 border border-slate-700 rounded-lg p-3">
-            <h3 className="text-sm font-bold mb-2 break-words" style={{ color: connector.color }}>
-              {connector.vendor}
-            </h3>
+          <div key={connector.vendor} className="bg-slate-800 border border-slate-700 rounded-lg p-3 hover:bg-slate-700/50 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: connector.color }} />
+              <h3 className="text-sm font-bold" style={{ color: connector.color }}>
+                {connector.vendor}
+              </h3>
+            </div>
             
-            <div className="space-y-2 text-xs">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
               <div>
-                <div className="text-slate-400 font-semibold">Auth:</div>
-                <div className="text-slate-300 break-words">{connector.auth}</div>
+                <div className="text-slate-500 font-semibold text-[10px] uppercase">Auth</div>
+                <div className="text-slate-300 truncate" title={connector.auth}>{connector.auth}</div>
               </div>
               
               <div>
-                <div className="text-slate-400 font-semibold">Contract:</div>
-                <div className="text-slate-300 break-words">{connector.contract}</div>
+                <div className="text-slate-500 font-semibold text-[10px] uppercase">Contract</div>
+                <div className="text-slate-300 truncate" title={connector.contract}>{connector.contract}</div>
               </div>
               
-              <div>
-                <div className="text-slate-400 font-semibold">Details:</div>
-                <div className="text-slate-300 break-words">{connector.details}</div>
+              <div className="col-span-2">
+                <div className="text-slate-500 font-semibold text-[10px] uppercase">Details</div>
+                <div className="text-slate-300 truncate" title={connector.details}>{connector.details}</div>
               </div>
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
-        <div className="text-xs text-cyan-300 break-words">
-          <span className="font-semibold">How AOS configured this:</span> AI over config corpus chooses auth flows, scopes, timeouts. No manual YAML.
-        </div>
       </div>
     </div>
   );
@@ -1258,37 +1274,42 @@ function Stage2Content() {
 
 function Stage3Content() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-white mb-2 break-words">DCL Mapping — Unified Entity</h2>
-        <p className="text-xs text-slate-400 break-words">Schema mappings from multiple sources</p>
+    <div className="h-full flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-white">DCL Mapping — Unified Entity</h2>
+          <p className="text-xs text-slate-400">Schema mappings from multiple sources</p>
+        </div>
+        <div className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+           <div className="text-xs text-purple-300">
+             Unified <span className="font-mono font-bold">customer_360</span> entity created
+           </div>
+        </div>
       </div>
 
-      <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3 text-xs text-purple-300 break-words">
-        DCL builds a unified customer_360 entity from Salesforce, MongoDB, Supabase, and Legacy Files.
-      </div>
-
-      <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-x-auto">
-        <table className="w-full min-w-max">
-          <thead className="bg-slate-900 border-b border-slate-700">
-            <tr>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Field</th>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Type</th>
-              <th className="text-left px-2 py-2 text-[10px] font-semibold text-slate-400 uppercase">Sources</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-700">
-            {demoCustomer360Mappings.slice(0, 6).map((mapping) => (
-              <tr key={mapping.canonicalField} className="hover:bg-slate-700/50">
-                <td className="px-2 py-2">
-                  <code className="text-cyan-400 font-mono text-xs">{mapping.canonicalField}</code>
-                </td>
-                <td className="px-2 py-2 text-xs text-slate-400">{mapping.type}</td>
-                <td className="px-2 py-2 text-xs text-slate-500 break-words">{mapping.sources}</td>
+      <div className="flex-1 bg-slate-800 border border-slate-700 rounded-lg overflow-hidden flex flex-col">
+        <div className="overflow-y-auto flex-1">
+          <table className="w-full min-w-max">
+            <thead className="bg-slate-900 border-b border-slate-700 sticky top-0 z-10">
+              <tr>
+                <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Canonical Field</th>
+                <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Type</th>
+                <th className="text-left px-3 py-2 text-[10px] font-semibold text-slate-400 uppercase bg-slate-900">Source Mappings</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-slate-700">
+              {demoCustomer360Mappings.slice(0, 8).map((mapping) => (
+                <tr key={mapping.canonicalField} className="hover:bg-slate-700/50">
+                  <td className="px-3 py-2">
+                    <code className="text-cyan-400 font-mono text-xs font-bold">{mapping.canonicalField}</code>
+                  </td>
+                  <td className="px-3 py-2 text-xs text-slate-400">{mapping.type}</td>
+                  <td className="px-3 py-2 text-xs text-slate-500 truncate max-w-[300px]" title={mapping.sources}>{mapping.sources}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -1296,23 +1317,39 @@ function Stage3Content() {
 
 function Stage4Content() {
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col gap-4">
       <div>
-        <h2 className="text-xl font-bold text-white mb-2 break-words">Agent Execution — Query Results</h2>
-        <p className="text-xs text-slate-400 break-words">AI agent analyzing unified data</p>
+        <h2 className="text-lg font-bold text-white">Agent Execution — Query Results</h2>
+        <p className="text-xs text-slate-400">AI agent analyzing unified data</p>
       </div>
 
-      <div className="bg-slate-800 border border-slate-700 rounded-lg p-3">
-        <div className="text-xs text-slate-400 mb-2">Query:</div>
-        <code className="text-xs text-cyan-400 break-words">
-          "Show me high-risk services with annual revenue &gt; $1M"
-        </code>
-      </div>
-
-      <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-        <div className="text-xs text-green-300 break-words">
-          <span className="font-semibold">Results:</span> Found 4 high-risk services totaling $8.5M ARR
+      <div className="flex gap-4">
+        <div className="flex-1 bg-slate-800 border border-slate-700 rounded-lg p-4 flex flex-col gap-2">
+          <div className="text-xs text-slate-400 uppercase font-semibold">Natural Language Query</div>
+          <code className="text-sm text-cyan-400 font-mono bg-slate-900 p-3 rounded border border-slate-700 block">
+            "Show me high-risk services with annual revenue &gt; $1M"
+          </code>
         </div>
+
+        <div className="flex-1 bg-green-500/10 border border-green-500/30 rounded-lg p-4 flex flex-col justify-center gap-2">
+          <div className="text-xs text-green-400 uppercase font-semibold">Analysis Result</div>
+          <div className="text-lg font-bold text-white">
+            Found <span className="text-green-400">4 high-risk services</span>
+          </div>
+          <div className="text-sm text-slate-300">
+            Total Revenue Impact: <span className="text-white font-bold">$8.5M ARR</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex-1 bg-slate-800 border border-slate-700 rounded-lg p-4 overflow-y-auto">
+         <div className="text-xs text-slate-400 uppercase font-semibold mb-2">Agent Reasoning</div>
+         <div className="space-y-2 text-xs text-slate-300 leading-relaxed">
+           <p>1. <span className="text-cyan-400">Identified Intent:</span> Risk analysis filtered by revenue threshold.</p>
+           <p>2. <span className="text-cyan-400">Queried Ontology:</span> `customer_360` entity joined with `service_registry`.</p>
+           <p>3. <span className="text-cyan-400">Filter Applied:</span> `risk_score == 'High'` AND `revenue &gt; 1000000`.</p>
+           <p>4. <span className="text-cyan-400">Aggregation:</span> Summed revenue for matching records.</p>
+         </div>
       </div>
     </div>
   );
@@ -1345,113 +1382,103 @@ function StepperNavigation({
   ];
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-center gap-4">
-        {stages.map((stage, idx) => (
-          <div key={stage.num} className="flex items-center">
-            <button
-              onClick={() => onStageClick(stage.num as Stage)}
-              disabled={isRunningPipeline}
-              className={`flex flex-col items-center gap-2 px-6 py-3 rounded-lg transition-all ${
-                currentStage === stage.num
-                  ? 'bg-cyan-500/20 border-2 border-cyan-500'
-                  : 'bg-slate-800 border-2 border-slate-700 hover:border-slate-600'
-              } ${isRunningPipeline ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-                currentStage === stage.num
-                  ? 'bg-cyan-500 text-white'
-                  : currentStage > stage.num
-                  ? 'bg-green-500 text-white'
-                  : 'bg-slate-700 text-slate-400'
-              }`}>
-                {currentStage > stage.num ? '✓' : stage.num}
-              </div>
-              <div className={`text-sm font-semibold ${
-                currentStage === stage.num ? 'text-cyan-400' : 'text-slate-400'
-              }`}>
-                {stage.label}
-              </div>
-            </button>
-            {idx < stages.length - 1 && (
-              <div className={`w-12 h-0.5 mx-2 ${
-                currentStage > stage.num ? 'bg-green-500' : 'bg-slate-700'
-              }`} />
-            )}
-          </div>
+    <div className="h-full flex flex-col justify-between">
+      {/* Stages List */}
+      <div className="space-y-2">
+        {stages.map((stage) => (
+          <button
+            key={stage.num}
+            onClick={() => onStageClick(stage.num as Stage)}
+            disabled={isRunningPipeline}
+            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-left group ${
+              currentStage === stage.num
+                ? 'bg-cyan-500/10 border border-cyan-500/30'
+                : 'hover:bg-slate-800 border border-transparent'
+            } ${isRunningPipeline ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+              currentStage === stage.num
+                ? 'bg-cyan-500 text-white'
+                : currentStage > stage.num
+                ? 'bg-green-500 text-white'
+                : 'bg-slate-700 text-slate-400 group-hover:bg-slate-600'
+            }`}>
+              {currentStage > stage.num ? '✓' : stage.num}
+            </div>
+            <div className={`text-xs font-medium ${
+              currentStage === stage.num ? 'text-cyan-300' : 'text-slate-400 group-hover:text-slate-300'
+            }`}>
+              {stage.label}
+            </div>
+          </button>
         ))}
       </div>
 
-      {isRunningPipeline ? (
-        <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/30 rounded-lg p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <Zap className="w-5 h-5 text-cyan-400 animate-pulse" />
-                <h3 className="text-lg font-bold text-white">Pipeline Running - Stage {currentStage} of 4</h3>
-              </div>
-              <p className="text-sm text-slate-400">
-                {currentStage < 4 
-                  ? "Review the information on the right panel. Click 'Continue' to proceed to the next stage." 
-                  : "Demo complete! Review the final results or restart the pipeline."}
-              </p>
+      {/* Action Buttons */}
+      <div className="mt-auto pt-4 border-t border-slate-800 space-y-2">
+        {isRunningPipeline ? (
+          <>
+            <div className="flex items-center gap-2 text-xs text-cyan-400 animate-pulse mb-2 px-1">
+              <Zap className="w-3 h-3" />
+              <span className="font-bold">Running Stage {currentStage}/4...</span>
             </div>
-            <div className="flex items-center gap-3">
+            
+            {currentStage < 4 ? (
               <button
-                onClick={onEndDemo}
-                className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors font-semibold"
+                onClick={onContinuePipeline}
+                className="w-full px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-md transition-colors text-xs font-bold flex items-center justify-center gap-2"
               >
-                End Demo
+                Continue
+                <ChevronRight className="w-3 h-3" />
               </button>
-              {currentStage < 4 ? (
-                <button
-                  onClick={onContinuePipeline}
-                  className="px-6 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors font-semibold flex items-center gap-2"
-                >
-                  Continue to Next Stage
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <button
-                  onClick={onRunFullPipeline}
-                  className="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors font-semibold flex items-center gap-2"
-                >
-                  <Play className="w-4 h-4" />
-                  Restart Pipeline
-                </button>
-              )}
+            ) : (
+              <button
+                onClick={onRunFullPipeline}
+                className="w-full px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md transition-colors text-xs font-bold flex items-center justify-center gap-2"
+              >
+                <Play className="w-3 h-3" />
+                Restart
+              </button>
+            )}
+            
+            <button
+              onClick={onEndDemo}
+              className="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md transition-colors text-xs font-semibold"
+            >
+              Stop Demo
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="flex gap-2">
+              <button
+                onClick={onBack}
+                disabled={currentStage === 1}
+                className="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md transition-colors text-xs font-semibold flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-3 h-3" />
+                Back
+              </button>
+              <button
+                onClick={onNext}
+                disabled={currentStage === 4}
+                className="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md transition-colors text-xs font-semibold flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+                <ChevronRight className="w-3 h-3" />
+              </button>
             </div>
-          </div>
-        </div>
-      ) : (
-        <div className="flex items-center justify-between">
-          <button
-            onClick={onBack}
-            disabled={currentStage === 1}
-            className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </button>
-
-          <button
-            onClick={onRunFullPipeline}
-            className="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors font-semibold flex items-center gap-2"
-          >
-            <Play className="w-4 h-4" />
-            Run Full Pipeline
-          </button>
-
-          <button
-            onClick={onNext}
-            disabled={currentStage === 4}
-            className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors font-semibold flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+            
+            <button
+              onClick={onRunFullPipeline}
+              className="w-full px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md transition-colors text-xs font-bold flex items-center justify-center gap-2"
+            >
+              <Play className="w-3 h-3" />
+              Run Pipeline
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
