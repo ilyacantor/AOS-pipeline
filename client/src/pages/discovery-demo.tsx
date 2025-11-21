@@ -570,9 +570,9 @@ const initialNodes: Node[] = [
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
-  { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'nlp', type: 'prompt', position: { x: 1050, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'analytics', type: 'analytics', position: { x: 1300, y: 290 }, data: { visible: false } },
+  { id: 'agents', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'nlp', type: 'prompt', position: { x: 1150, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'analytics', type: 'analytics', position: { x: 1150, y: 550 }, data: { visible: false } },
   
   // API Mesh Label
   { id: 'lbl-mesh', type: 'pill', position: { x: 565, y: 280 }, data: { label: 'API Mesh', visible: false }, zIndex: 10 },
