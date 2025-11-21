@@ -28,7 +28,8 @@ import {
   MarkerType,
   EdgeProps,
   BaseEdge,
-  getSmoothStepPath
+  getSmoothStepPath,
+  useReactFlow
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { 
@@ -46,7 +47,8 @@ import {
   Search,
   AlertTriangle,
   HelpCircle,
-  Table2
+  Table2,
+  RotateCcw
 } from 'lucide-react';
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -518,7 +520,41 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
         }, item.delay));
       });
 
-      // Materialize Catalogue (after 6s)
+      // NEW: Green Glow Sequence for existing nodes (Legacy -> Supabase -> MongoDB -> Salesforce)
+      const greenSequence = [
+        { id: 'legacy', delay: 5500 },
+        { id: 'supabase', delay: 6000 },
+        { id: 'mongodb', delay: 6500 },
+        { id: 'salesforce', delay: 7000 },
+      ];
+
+      greenSequence.forEach((item) => {
+        // Flash & turn Green
+        timeouts.push(setTimeout(() => {
+          setNodes((currentNodes) => 
+            currentNodes.map((node) => {
+              if (node.id === item.id) {
+                return { ...node, data: { ...node.data, flash: true, glowGreen: true } };
+              }
+              return node;
+            })
+          );
+
+          // Turn off flash
+          setTimeout(() => {
+             setNodes((currentNodes) => 
+               currentNodes.map((node) => {
+                 if (node.id === item.id) {
+                   return { ...node, data: { ...node.data, flash: false } };
+                 }
+                 return node;
+               })
+             );
+          }, 500);
+        }, item.delay));
+      });
+
+      // Materialize Catalogue (after 7.5s now to allow sequence to finish)
       timeouts.push(setTimeout(() => {
         setNodes((currentNodes) => 
           currentNodes.map((node) => {
@@ -553,7 +589,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
           );
         }, 500);
 
-      }, 6000));
+      }, 7500));
 
       return () => timeouts.forEach(clearTimeout);
     }
@@ -643,6 +679,12 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     if (onNodeClick) onNodeClick(node.id, node.type || 'default');
   }, [onNodeClick]);
 
+  // Reset function
+  const resetNodes = () => {
+    setNodes(initialNodes);
+    // Ensure edge types are preserved or reset if needed, but mainly positions
+  };
+
   return (
     <div className="w-full h-full bg-slate-950/50 rounded-xl border border-slate-800/50 overflow-hidden relative">
       <ReactFlow
@@ -661,6 +703,17 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       >
         <Background color="#1e293b" gap={20} size={1} />
         <Controls className="bg-slate-800 border-slate-700 text-slate-200" />
+        
+        {/* Reset Button */}
+        <div className="absolute top-4 right-4 z-10">
+           <button 
+             onClick={resetNodes}
+             className="flex items-center gap-2 px-3 py-2 bg-slate-900/80 border border-slate-700 rounded-md text-xs text-slate-300 hover:text-white hover:border-slate-500 transition-colors shadow-lg backdrop-blur-sm"
+           >
+             <RotateCcw className="w-3 h-3" />
+             Reset Layout
+           </button>
+        </div>
       </ReactFlow>
     </div>
   );
