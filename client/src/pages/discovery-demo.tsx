@@ -1026,7 +1026,7 @@ export default function DiscoveryDemoStandalone() {
 
   const handleStageClick = (stage: Stage) => {
     setCurrentStage(stage);
-    setIsRunningPipeline(false);
+    setIsRunningPipeline(true);
   };
 
   const totalCounts = getTotalCounts();
@@ -1414,7 +1414,6 @@ function StepperNavigation({
           <button
             key={stage.num}
             onClick={() => onStageClick(stage.num as Stage)}
-            disabled={isRunningPipeline}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all group ${
               currentStage === stage.num
                 ? 'bg-cyan-500/20 border border-cyan-500/50'
