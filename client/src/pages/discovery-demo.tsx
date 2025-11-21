@@ -459,6 +459,45 @@ const PromptNode = ({ data, selected }: NodeProps) => {
   );
 };
 
+const AnalyticsNode = ({ data, selected }: NodeProps) => {
+  return (
+    <div className={cn(
+      "relative w-40 h-40 transition-all duration-500",
+      data.visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+    )}>
+      <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 !-left-4" />
+      
+      {/* Report Page (Back) */}
+      <div className="absolute top-0 right-0 w-24 h-32 bg-slate-800 border border-slate-600 rounded-md shadow-lg transform rotate-6 p-2 flex flex-col gap-2 transition-all duration-500 hover:rotate-0 hover:z-50 hover:scale-110">
+         <div className="w-1/2 h-2 bg-slate-600 rounded"></div>
+         <div className="w-full h-1 bg-slate-700 rounded"></div>
+         <div className="w-full h-1 bg-slate-700 rounded"></div>
+         <div className="w-3/4 h-1 bg-slate-700 rounded"></div>
+         <div className="w-full h-1 bg-slate-700 rounded"></div>
+         <div className="w-full h-1 bg-slate-700 rounded"></div>
+      </div>
+
+      {/* Bar Chart (Middle) */}
+      <div className="absolute bottom-0 left-4 w-28 h-24 bg-slate-900/90 border border-slate-600 rounded-md shadow-lg backdrop-blur-sm p-2 flex items-end justify-around gap-1 transform -rotate-3 transition-all duration-500 hover:rotate-0 hover:z-50 hover:scale-110">
+         <div className="w-3 h-10 bg-cyan-500/60 rounded-t"></div>
+         <div className="w-3 h-16 bg-cyan-500/80 rounded-t"></div>
+         <div className="w-3 h-8 bg-cyan-500/50 rounded-t"></div>
+         <div className="w-3 h-12 bg-cyan-500/70 rounded-t"></div>
+      </div>
+
+      {/* Pie Chart (Front) */}
+      <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-slate-900 border border-slate-600 rounded-full shadow-xl flex items-center justify-center transition-all duration-500 hover:scale-110 hover:z-50">
+        <svg viewBox="0 0 32 32" className="w-full h-full p-1">
+           <circle cx="16" cy="16" r="16" fill="#0f172a" />
+           <path d="M16 16 L32 16 A16 16 0 0 1 16 32 Z" fill="#0ea5e9" />
+           <path d="M16 16 L16 32 A16 16 0 0 1 0.3 12.5 Z" fill="#10b981" />
+           <path d="M16 16 L0.3 12.5 A16 16 0 0 1 32 16 Z" fill="#f59e0b" />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
 const nodeTypes = {
   vendor: VendorNode,
   processing: ProcessingNode,
@@ -467,6 +506,7 @@ const nodeTypes = {
   catalogue: CatalogueNode,
   ontology: OntologyNode,
   prompt: PromptNode,
+  analytics: AnalyticsNode,
 };
 
 const initialNodes: Node[] = [
@@ -483,6 +523,7 @@ const initialNodes: Node[] = [
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'prompt', position: { x: 1050, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'analytics', type: 'analytics', position: { x: 1350, y: 320 }, data: { visible: false } },
   
   // API Mesh Label
   { id: 'lbl-mesh', type: 'pill', position: { x: 565, y: 280 }, data: { label: 'API Mesh', visible: false }, zIndex: 10 },
@@ -512,6 +553,7 @@ const initialEdges: Edge[] = [
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-nlp', source: 'dcl', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-ag-an', source: 'agents', target: 'analytics', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 }, hidden: true },
   // Logo Connections (From AAM Top to Logos Bottom)
   { id: 'e-aam-l1', source: 'aam', sourceHandle: 'top-source', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
   { id: 'e-aam-l2', source: 'aam', sourceHandle: 'top-source', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
@@ -556,6 +598,10 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
            if (pipelineStep >= 1 && node.id === 'aam') active = true; // Keep AAM active
            if (pipelineStep >= 2 && node.id === 'dcl') active = true; // Keep DCL active (requested "glow like AOD and DCL glow")
            if (pipelineStep === 3 && (node.id === 'agents' || node.id === 'nlp')) active = true;
+           if (pipelineStep === 3 && node.id === 'analytics') {
+             // Logic to handle analytics active state will be in effect hook or simpler here:
+             // Actually we want it to be revealed during stage 4.
+           }
            
            // AOD and AAM are never marked complete while running to keep them lit/glowing
            // if (pipelineStep > 1 && node.id === 'aam') complete = true; // REMOVED to keep glow
@@ -569,6 +615,13 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             }
             if (node.id === 'dcl' && pipelineStep >= 2) {
                return { ...node, data: { ...node.data, active, complete, showBottom: true } };
+            }
+            if (node.id === 'analytics' && pipelineStep >= 3) {
+               // Ensure visible if we are at or past stage 4 (index 3) and not running (completed step)
+               // But if running, the effect below handles the sequence.
+               if (pipelineState === 'complete' || (pipelineStep > 3)) {
+                 return { ...node, data: { ...node.data, visible: true } };
+               }
             }
         }
 
@@ -611,9 +664,14 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                 edge.data = { ...edge.data, biDirectional: true };
               }
             
+            if (pipelineStep === 3 && edge.source === 'agents' && edge.target === 'analytics') {
+               // This edge activates later in the sequence, handled by effect
+            }
+
             if (pipelineStep > 0 && edge.target === 'aod') stroke = '#0bcad9';
             if (pipelineStep > 1 && edge.target === 'aam') stroke = '#0bcad9';
             if (pipelineStep > 2 && edge.target === 'dcl') stroke = '#0bcad9';
+            if (pipelineStep >= 3 && edge.target === 'analytics') stroke = '#0bcad9';
          }
 
          return { ...edge, data: { ...edge.data, active, scanning, beaming }, style: { stroke, strokeWidth: 2 } };
@@ -624,18 +682,22 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
   // Effect to handle node transformation during discovery
   useEffect(() => {
     if (pipelineState === 'running' && pipelineStep === 0) {
-      // Reset edges beaming and hidden state for catalogue AND LOGOS
+      // Reset edges beaming and hidden state for catalogue AND LOGOS AND ANALYTICS
       setEdges((eds) => eds.map(e => {
         if (e.id === 'e-aod-cat') return { ...e, hidden: true, data: { ...e.data, beaming: false } };
+        if (e.id === 'e-ag-an') return { ...e, hidden: true, data: { ...e.data, active: false } };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         return { ...e, data: { ...e.data, beaming: false } };
       }));
       
-      // Reset catalogue node visibility AND LOGOS AND LABEL
+      // Reset catalogue node visibility AND LOGOS AND LABEL AND ANALYTICS
       setNodes((currentNodes) => 
         currentNodes.map((node) => {
           if (node.id === 'catalogue') {
             return { ...node, hidden: true, style: { ...node.style, opacity: 0 } };
+          }
+          if (node.id === 'analytics') {
+            return { ...node, data: { ...node.data, visible: false } };
           }
           if (node.type === 'image') {
             return { ...node, data: { ...node.data, visible: false } };
@@ -882,6 +944,39 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
               return n;
             }));
           }, 500);
+
+          // SPECIAL: If target is Agents (Step 3), reveal Analytics after 1.5s
+          if (pipelineStep === 3) {
+             setTimeout(() => {
+                // Reveal Edge
+                setEdges((eds) => eds.map(e => {
+                  if (e.id === 'e-ag-an') {
+                    return { ...e, hidden: false, data: { ...e.data, beaming: true } };
+                  }
+                  return e;
+                }));
+
+                // Reveal Node shortly after edge starts beaming
+                setTimeout(() => {
+                   setNodes((nds) => nds.map(n => {
+                     if (n.id === 'analytics') {
+                       return { ...n, data: { ...n.data, visible: true } };
+                     }
+                     return n;
+                   }));
+                   
+                   // Stop beaming on edge
+                   setEdges((eds) => eds.map(e => {
+                    if (e.id === 'e-ag-an') {
+                      return { ...e, data: { ...e.data, beaming: false, active: true } };
+                    }
+                    return e;
+                  }));
+
+                }, 500);
+
+             }, 1500);
+          }
 
           // SPECIAL: If target is AAM (Step 1), reveal logos 1s after flash starts
           if (targetId === 'aam') {
