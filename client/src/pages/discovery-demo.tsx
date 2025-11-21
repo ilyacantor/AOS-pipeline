@@ -859,10 +859,10 @@ export default function DiscoveryDemoStandalone() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Graph Panel - 2/3 width */}
-        <div className="w-2/3 border-r border-slate-800 p-8 bg-slate-950 overflow-hidden">
-          <h2 className="text-2xl font-bold text-white mb-8">Pipeline Graph</h2>
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        {/* Graph Panel - 2/3 width on desktop, full on mobile */}
+        <div className="w-full md:w-2/3 border-r border-slate-800 p-4 md:p-8 bg-slate-950 overflow-hidden h-1/2 md:h-full">
+          <h2 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-8">Pipeline Graph</h2>
           <div className="flex-1 h-full">
             <GraphView 
               pipelineStep={pipelineStep} 
@@ -872,8 +872,8 @@ export default function DiscoveryDemoStandalone() {
           </div>
         </div>
 
-        {/* Detail Panel - 1/3 width */}
-        <div className="w-1/3 p-8 bg-slate-900 overflow-auto">
+        {/* Detail Panel - 1/3 width on desktop, full on mobile */}
+        <div className="w-full md:w-1/3 p-4 md:p-8 bg-slate-900 overflow-auto h-1/2 md:h-full border-t md:border-t-0 border-slate-800">
           {currentStage === 1 && <Stage1Content totalCounts={totalCounts} />}
           {currentStage === 2 && <Stage2Content />}
           {currentStage === 3 && <Stage3Content />}
