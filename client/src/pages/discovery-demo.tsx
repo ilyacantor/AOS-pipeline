@@ -385,7 +385,6 @@ const CatalogueNode = ({ data }: NodeProps) => {
     <div className="flex flex-col items-center gap-2 relative">
       {/* Pill Label - Placed above to match Ontology Graph style */}
       <div className="whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-purple-300 shadow-lg backdrop-blur-sm relative">
-        <Handle type="target" position={Position.Top} id="top" className="!bg-purple-500 !w-3 !h-3 !-top-1.5" />
         Asset Catalogue
       </div>
 
@@ -1177,7 +1176,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
 export default function DiscoveryDemoStandalone() {
   const [currentStage, setCurrentStage] = useState<Stage>(0);
-  const [isRunningPipeline, setIsRunningPipeline] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
     if (isRunningPipeline) {
@@ -1203,6 +1202,7 @@ export default function DiscoveryDemoStandalone() {
         // Stage 4 (Agents): Final stage, stop pipeline running state but keep stage 4 active
         timer = setTimeout(() => {
           setIsRunningPipeline(false);
+          setIsFinished(true); // Mark as finished so it doesn't reset
         }, 4000);
       }
 
@@ -1213,7 +1213,9 @@ export default function DiscoveryDemoStandalone() {
   const handleRunFullPipeline = () => {
     setCurrentStage(1);
     setIsRunningPipeline(true);
+    setIsFinished(false); // Reset finished state
   };
+
 
   const handleContinuePipeline = () => {
     if (currentStage < 4) {
@@ -1225,6 +1227,7 @@ export default function DiscoveryDemoStandalone() {
 
   const handleEndDemo = () => {
     setIsRunningPipeline(false);
+    setIsFinished(false);
     setCurrentStage(0);
   };
 
@@ -1249,7 +1252,7 @@ export default function DiscoveryDemoStandalone() {
 
   const totalCounts = getTotalCounts();
   const pipelineStep = currentStage - 1;
-  const pipelineState = isRunningPipeline ? "running" : "idle";
+  const pipelineState = isRunningPipeline ? "running" : (isFinished ? "complete" : "idle");
 
   const [showDetails, setShowDetails] = useState(false);
 
