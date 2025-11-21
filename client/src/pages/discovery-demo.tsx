@@ -273,20 +273,20 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
   return (
     <div className="relative flex flex-col items-center justify-center">
       {/* Top Source Handle for AAM -> Logos */}
-      {data.label === 'AAM' && (
+      {data.label === 'Connect and Maintain APIs' && (
          <Handle type="source" position={Position.Top} id="top-source" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
       )}
 
       {/* Explicit Right Source Handle for AAM -> DCL */}
-      {data.label === 'AAM' && (
+      {data.label === 'Connect and Maintain APIs' && (
          <Handle type="source" position={Position.Right} id="right-source" className="!bg-slate-600 !w-2 !h-2 !-right-1" />
       )}
 
       <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 -ml-1" />
       <div 
         className={cn(
-          "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md relative z-10",
-          isHex ? "w-32 h-32" : "w-32 h-32 rounded-full",
+          "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md relative z-10 px-2",
+          isHex ? "w-40 h-40" : "w-40 h-40 rounded-full",
           selected ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "border-slate-700",
           // Enhanced glow for AOD and AAM (persisting)
           data.active ? "border-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.6)] bg-cyan-950/30" : "",
@@ -301,9 +301,9 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
         )}>
           {data.icon}
         </div>
-        <div className="text-center z-10">
-          <div className={cn("text-xs font-bold", data.active ? "text-cyan-100" : "text-slate-200")}>{data.label}</div>
-          <div className={cn("text-[9px] uppercase tracking-wider", data.active ? "text-cyan-300/70" : "text-slate-500")}>{data.sub}</div>
+        <div className="text-center z-10 flex flex-col items-center justify-center w-full">
+          <div className={cn("text-xs font-bold leading-tight max-w-[120px]", data.active ? "text-cyan-100" : "text-slate-200")}>{data.label}</div>
+          {data.sub && <div className={cn("text-[9px] uppercase tracking-wider mt-1", data.active ? "text-cyan-300/70" : "text-slate-500")}>{data.sub}</div>}
         </div>
         
         {data.active && (
@@ -316,7 +316,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
       <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2 -mr-1" />
       
       {/* Bottom Source Handle for AOD -> Catalogue */}
-      {data.label === 'AOD' && (
+      {data.label === 'Discover IT Assets' && (
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       )}
 
@@ -360,7 +360,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
 const ImageNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
-      "relative flex items-center justify-center w-10 h-10 rounded-full border border-slate-600 bg-slate-900/50 p-1.5 transition-all duration-700 ease-out",
+      "relative flex items-center justify-center w-[50px] h-[50px] rounded-full border border-slate-600 bg-slate-900/50 p-1.5 transition-all duration-700 ease-out",
       data.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-50"
     )}>
       {/* Connect from Bottom (since they are above AAM) */}
@@ -562,10 +562,10 @@ const initialNodes: Node[] = [
   { id: 'shadow1', type: 'vendor', position: { x: 50, y: 450 }, data: { label: 'Shadow IT', sub: 'Dropbox Personal', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500' } },
   { id: 'shadow2', type: 'vendor', position: { x: 50, y: 550 }, data: { label: 'Shadow IT', sub: 'Unknown AWS Acct', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500' } },
   { id: 'unknown', type: 'vendor', position: { x: 50, y: 650 }, data: { label: '????', sub: 'Unidentified Protocol', icon: <HelpCircle className="w-5 h-5" />, color: 'text-slate-400' } },
-  { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'Discover IT Assets', sub: '', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 500 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
-  { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
+  { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'Connect and Maintain APIs', sub: '', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'Unify / Contextualize', sub: '', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'prompt', position: { x: 1150, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   { id: 'analytics', type: 'analytics', position: { x: 1150, y: 550 }, data: { visible: false } },
