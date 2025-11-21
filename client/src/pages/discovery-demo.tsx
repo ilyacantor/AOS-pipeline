@@ -175,6 +175,18 @@ const DataFlowEdge = ({
         </circle>
       )}
       {data?.beaming && (
+        <circle r="3" fill="#ffffff">
+          <animateMotion 
+            dur="1.5s" 
+            repeatCount="indefinite" 
+            path={edgePath} 
+            keyPoints="0;1;0" 
+            keyTimes="0;0.5;1" 
+            calcMode="linear" 
+          />
+        </circle>
+      )}
+      {data?.beaming && (
         <path 
           d={edgePath} 
           stroke="#ffffff" 
@@ -226,6 +238,11 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
       {/* Top Source Handle for AAM -> Logos */}
       {data.label === 'AAM' && (
          <Handle type="source" position={Position.Top} id="top-source" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
+      )}
+
+      {/* Explicit Right Source Handle for AAM -> DCL */}
+      {data.label === 'AAM' && (
+         <Handle type="source" position={Position.Right} id="right-source" className="!bg-slate-600 !w-2 !h-2 !-right-1" />
       )}
 
       <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 -ml-1" />
@@ -364,7 +381,7 @@ const initialEdges: Edge[] = [
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top-target', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-aam-dcl', source: 'aam', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-nlp', source: 'dcl', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   // Logo Connections (From AAM Top to Logos Bottom)
@@ -759,8 +776,19 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
   // Reset function
   const resetNodes = () => {
-    setNodes(initialNodes);
-    // Ensure edge types are preserved or reset if needed, but mainly positions
+    // Only reset positions, keep data intact
+    setNodes((currentNodes) => 
+      initialNodes.map((initialNode) => {
+        const currentNode = currentNodes.find(n => n.id === initialNode.id);
+        if (currentNode) {
+          return {
+             ...currentNode,
+             position: initialNode.position
+          };
+        }
+        return initialNode;
+      })
+    );
   };
 
   return (
