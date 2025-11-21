@@ -1176,6 +1176,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
 export default function DiscoveryDemoStandalone() {
   const [currentStage, setCurrentStage] = useState<Stage>(0);
+  const [isRunningPipeline, setIsRunningPipeline] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
