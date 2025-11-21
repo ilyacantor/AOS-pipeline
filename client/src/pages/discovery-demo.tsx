@@ -320,7 +320,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
       {/* Bottom Attachments (Label & Media) */}
       {(data.bottomLabel || data.bottomMedia || (data.bottomImage && data.showBottom)) && (
         <div className="absolute top-full mt-4 flex flex-col items-center gap-2 z-20">
-          {data.bottomLabel && (
+          {data.bottomLabel && data.showBottom && (
             <div className="whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
               {data.bottomLabel}
             </div>
