@@ -357,7 +357,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
 const ImageNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
-      "relative flex items-center justify-center w-10 h-10 rounded-full p-1.5 transition-all duration-700 ease-out",
+      "relative flex items-center justify-center w-10 h-10 rounded-full border border-slate-600 bg-slate-900/50 p-1.5 transition-all duration-700 ease-out",
       data.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-50"
     )}>
       {/* Connect from Bottom (since they are above AAM) */}
