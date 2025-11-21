@@ -1669,12 +1669,14 @@ function StepperNavigation({
         {/* Details Toggle */}
         <button
            onClick={onToggleDetails}
-           className={`p-2 rounded-md transition-colors text-xs font-semibold flex items-center justify-center gap-2 ${
-             showDetails ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+           className={`p-2 rounded-md transition-all text-xs font-semibold flex items-center justify-center gap-2 ${
+             showDetails 
+               ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50 shadow-[0_0_10px_rgba(249,115,22,0.3)]' 
+               : 'bg-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 hover:bg-slate-800/80 border border-transparent'
            }`}
            title="Toggle Details"
         >
-          <FileText className="w-4 h-4" />
+          <FileText className={showDetails ? "w-4 h-4 animate-pulse" : "w-4 h-4"} />
         </button>
 
         <div className="w-px h-6 bg-slate-700"></div>
