@@ -48,7 +48,8 @@ import {
   AlertTriangle,
   HelpCircle,
   Table2,
-  RotateCcw
+  RotateCcw,
+  Brain
 } from 'lucide-react';
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -233,7 +234,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
           "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md relative z-10",
           isHex ? "w-32 h-32" : "w-32 h-32 rounded-full",
           selected ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "border-slate-700",
-          // Enhanced glow for AOD
+          // Enhanced glow for AOD and AAM (persisting)
           data.active ? "border-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.6)] bg-cyan-950/30" : "",
           data.complete ? "border-green-500 shadow-[0_0_15px_-5px_rgba(34,197,94,0.5)]" : ""
         )}
@@ -265,17 +266,12 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       )}
 
-      {/* Bottom Media Attachment (DCL) */}
-      {data.bottomMedia && (
-        <div className="absolute top-full mt-4 w-32 h-20 bg-slate-900/80 rounded-lg border border-slate-700 overflow-hidden shadow-lg backdrop-blur-sm">
-          <video 
-            src={data.bottomMedia} 
-            className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-          />
+      {/* Bottom Label Attachment (DCL Ontology Graph) */}
+      {data.bottomLabel && (
+        <div className="absolute top-full mt-2 whitespace-nowrap">
+          <div className="px-3 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
+            {data.bottomLabel}
+          </div>
         </div>
       )}
     </div>
@@ -298,7 +294,7 @@ const ImageNode = ({ data }: NodeProps) => {
 const PillLabelNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
-      "px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/50 text-[10px] font-bold text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.3)] backdrop-blur-sm transition-all duration-500",
+      "px-4 py-2 rounded-full bg-slate-900/90 border border-cyan-500/50 text-xl font-bold text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)] backdrop-blur-sm transition-all duration-500",
       data.visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
     )}>
       {data.label}
@@ -324,11 +320,12 @@ const initialNodes: Node[] = [
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'vendor', position: { x: 350, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue', sub: 'Unified Inventory', icon: <Table2 className="w-5 h-5" />, color: 'text-purple-400' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomMedia: dclVideo } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'nlp', type: 'processing', position: { x: 1100, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   
   // API Mesh Label
-  { id: 'lbl-mesh', type: 'pill', position: { x: 572, y: 290 }, data: { label: 'API Mesh', visible: false }, zIndex: 10 },
+  { id: 'lbl-mesh', type: 'pill', position: { x: 565, y: 280 }, data: { label: 'API Mesh', visible: false }, zIndex: 10 },
 
   // Logo Array Nodes (Moved Above AAM)
   { id: 'logo-1', type: 'image', position: { x: 520, y: 220 }, data: { image: dynamicsLogo, visible: false } },
@@ -354,6 +351,7 @@ const initialEdges: Edge[] = [
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-dcl-nlp', source: 'dcl', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   // Logo Connections (From AAM Top to Logos Bottom)
   { id: 'e-aam-l1', source: 'aam', sourceHandle: 'top-source', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
   { id: 'e-aam-l2', source: 'aam', sourceHandle: 'top-source', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
@@ -393,13 +391,13 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
              active = true;
            }
            
-           if (pipelineStep === 1 && node.id === 'aam') active = true;
-           if (pipelineStep === 2 && node.id === 'dcl') active = true;
-           if (pipelineStep === 3 && node.id === 'agents') active = true;
+           if (pipelineStep >= 1 && node.id === 'aam') active = true; // Keep AAM active
+           if (pipelineStep >= 2 && node.id === 'dcl') active = true; // Keep DCL active (requested "glow like AOD and DCL glow")
+           if (pipelineStep === 3 && (node.id === 'agents' || node.id === 'nlp')) active = true;
            
-           // AOD is never marked complete while running to keep it lit
-           if (pipelineStep > 1 && node.id === 'aam') complete = true;
-           if (pipelineStep > 2 && node.id === 'dcl') complete = true;
+           // AOD and AAM are never marked complete while running to keep them lit/glowing
+           // if (pipelineStep > 1 && node.id === 'aam') complete = true; // REMOVED to keep glow
+           // if (pipelineStep > 2 && node.id === 'dcl') complete = true; // REMOVED to keep glow
         }
 
         return { ...node, data: { ...node.data, active, complete } };
@@ -431,7 +429,10 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             }
             if (pipelineStep === 1 && edge.source === 'aod' && edge.target === 'aam') { active = true; stroke = '#0bcad9'; }
             if (pipelineStep === 2 && edge.source === 'aam' && edge.target === 'dcl') { active = true; stroke = '#0bcad9'; }
-            if (pipelineStep === 3 && edge.source === 'dcl' && edge.target === 'agents') { active = true; stroke = '#0bcad9'; }
+            if (pipelineStep === 3 && (
+                (edge.source === 'dcl' && edge.target === 'agents') || 
+                (edge.source === 'dcl' && edge.target === 'nlp')
+              )) { active = true; stroke = '#0bcad9'; }
             
             if (pipelineStep > 0 && edge.target === 'aod') stroke = '#0bcad9';
             if (pipelineStep > 1 && edge.target === 'aam') stroke = '#0bcad9';
@@ -644,13 +645,17 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       
       if (pipelineStep === 1) { sourceId = 'aod'; targetId = 'aam'; }
       if (pipelineStep === 2) { sourceId = 'aam'; targetId = 'dcl'; }
-      if (pipelineStep === 3) { sourceId = 'dcl'; targetId = 'agents'; }
+      if (pipelineStep === 3) { sourceId = 'dcl'; targetId = 'agents'; } // Trigger for agents, we'll handle NLP manually or together
 
       if (sourceId && targetId) {
         // 1. Start Beam
         setEdges((eds) => eds.map(e => {
            if (e.source === sourceId && e.target === targetId) {
              return { ...e, data: { ...e.data, beaming: true } };
+           }
+           // Also beam to NLP if stepping to 3
+           if (pipelineStep === 3 && e.source === 'dcl' && e.target === 'nlp') {
+              return { ...e, data: { ...e.data, beaming: true } };
            }
            return e;
         }));
@@ -661,12 +666,18 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
              if (e.source === sourceId && e.target === targetId) {
                return { ...e, data: { ...e.data, beaming: false } };
              }
+             if (pipelineStep === 3 && e.source === 'dcl' && e.target === 'nlp') {
+                return { ...e, data: { ...e.data, beaming: false } };
+             }
              return e;
           }));
 
           setNodes((nds) => nds.map(n => {
             if (n.id === targetId) {
               return { ...n, data: { ...n.data, flash: true } };
+            }
+            if (pipelineStep === 3 && n.id === 'nlp') {
+               return { ...n, data: { ...n.data, flash: true } };
             }
             return n;
           }));
@@ -676,6 +687,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             setNodes((nds) => nds.map(n => {
               if (n.id === targetId) {
                 return { ...n, data: { ...n.data, flash: false } };
+              }
+              if (pipelineStep === 3 && n.id === 'nlp') {
+                 return { ...n, data: { ...n.data, flash: false } };
               }
               return n;
             }));
