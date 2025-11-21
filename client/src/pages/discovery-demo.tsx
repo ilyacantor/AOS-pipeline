@@ -391,7 +391,7 @@ const CatalogueNode = ({ data }: NodeProps) => {
       <img src={catalogueImage} alt="Asset Catalogue" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity z-10" />
       
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
-        <div className="text-xs font-bold text-purple-200">Asset Catalogue</div>
+        <div className="text-lg font-bold text-purple-200">Asset Catalogue</div>
         <div className="text-[9px] text-purple-400/80">Unified Inventory</div>
       </div>
     </div>
@@ -864,11 +864,19 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
   const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     const target = event.target as HTMLElement;
+    
     // Check if click was on the Ontology Graph image
     if (target.tagName === 'IMG' && target.getAttribute('alt') === 'Ontology Graph') {
        setExpandedImage(dclGraph);
        return;
     }
+
+    // Check if click was on the Asset Catalogue image
+    if ((target.tagName === 'IMG' && target.getAttribute('alt') === 'Asset Catalogue') || node.type === 'catalogue') {
+      setExpandedImage(catalogueImage);
+      return;
+    }
+
     if (onNodeClick) onNodeClick(node.id, node.type || 'default');
   }, [onNodeClick]);
 
