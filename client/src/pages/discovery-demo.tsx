@@ -321,7 +321,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
       {(data.bottomLabel || data.bottomMedia || (data.bottomImage && data.showBottom)) && (
         <div className="absolute top-full mt-4 flex flex-col items-center gap-2 z-20">
           {data.bottomLabel && (
-            <div className="whitespace-nowrap px-3 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
+            <div className="whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
               {data.bottomLabel}
             </div>
           )}
@@ -382,7 +382,7 @@ const CatalogueNode = ({ data }: NodeProps) => {
   return (
     <div className="flex flex-col items-center gap-2">
       {/* Pill Label - Placed above to match Ontology Graph style */}
-      <div className="whitespace-nowrap px-3 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-medium text-purple-300 shadow-lg backdrop-blur-sm">
+      <div className="whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-purple-300 shadow-lg backdrop-blur-sm">
         Asset Catalogue
       </div>
 
