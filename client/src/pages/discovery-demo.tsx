@@ -462,63 +462,87 @@ const PromptNode = ({ data, selected }: NodeProps) => {
 const AnalyticsNode = ({ data, selected }: NodeProps) => {
   return (
     <div className={cn(
-      "flex flex-col items-center gap-2 transition-all duration-700 ease-out",
+      "relative w-80 h-60 transition-all duration-700 ease-out",
       data.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
     )}>
-       {/* Pill Label */}
-      <div className="whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
-        Analytics Dashboard
+      <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-4 !top-1/2" />
+      
+      {/* Pill Label - Centered above the group */}
+      <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-cyan-300 shadow-lg backdrop-blur-sm z-50">
+        Analytical Reports
       </div>
 
-      {/* Dashboard Card */}
-      <div className={cn(
-        "relative w-64 h-40 rounded-xl overflow-hidden shadow-2xl bg-slate-900 border-2 border-cyan-500/30 group cursor-pointer hover:scale-105 transition-transform duration-300",
-        selected ? "border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)]" : ""
-      )}>
-        <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-1.5" />
-        
-        {/* Dashboard Header */}
-        <div className="absolute top-0 left-0 right-0 h-8 bg-slate-800 border-b border-slate-700 flex items-center px-3 gap-2">
-           <div className="w-2 h-2 rounded-full bg-red-500"></div>
-           <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-           <div className="w-2 h-2 rounded-full bg-green-500"></div>
-           <div className="ml-auto text-[8px] text-slate-400">DASHBOARD_V2</div>
-        </div>
+      {/* Card 1: Document/Report (Back Left) */}
+      <div className="absolute top-4 left-0 w-48 h-36 bg-slate-800 border border-slate-600 rounded-lg shadow-lg transform -rotate-6 hover:rotate-0 hover:z-40 transition-all duration-500 p-3 flex flex-col gap-2 group/card1 cursor-pointer">
+         <div className="w-1/3 h-2 bg-slate-600 rounded mb-1"></div>
+         <div className="w-full h-1 bg-slate-700 rounded"></div>
+         <div className="w-full h-1 bg-slate-700 rounded"></div>
+         <div className="w-3/4 h-1 bg-slate-700 rounded"></div>
+         <div className="w-full h-1 bg-slate-700 rounded"></div>
+         <div className="w-5/6 h-1 bg-slate-700 rounded"></div>
+         <div className="mt-auto flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-orange-500/20 border border-orange-500/50 flex items-center justify-center">
+               <FileText className="w-2 h-2 text-orange-500" />
+            </div>
+            <div className="text-[8px] text-slate-400">RISK_AUDIT.PDF</div>
+         </div>
+      </div>
 
-        {/* Dashboard Body */}
-        <div className="absolute top-8 inset-x-0 bottom-0 p-2 grid grid-cols-2 gap-2 bg-slate-900/50">
-           {/* Chart 1 */}
-           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 flex flex-col justify-end gap-0.5 items-center">
-              <div className="w-full flex items-end justify-around h-full px-1">
-                <div className="w-1.5 bg-cyan-500/40 h-[40%] rounded-t-[1px]"></div>
-                <div className="w-1.5 bg-cyan-500/60 h-[70%] rounded-t-[1px]"></div>
-                <div className="w-1.5 bg-cyan-500/80 h-[50%] rounded-t-[1px]"></div>
-                <div className="w-1.5 bg-cyan-500 h-[90%] rounded-t-[1px]"></div>
+      {/* Card 2: Data Table (Back Right/Middle) */}
+      <div className="absolute top-0 right-4 w-48 h-36 bg-slate-900 border border-slate-600 rounded-lg shadow-lg transform rotate-3 hover:rotate-0 hover:z-40 transition-all duration-500 p-0 overflow-hidden flex flex-col group/card2 cursor-pointer">
+         <div className="h-6 bg-slate-800 border-b border-slate-700 flex items-center px-2">
+            <div className="text-[9px] font-bold text-slate-400">DATA_EXPORT_V4</div>
+         </div>
+         <div className="p-2 grid grid-cols-3 gap-1">
+            {[...Array(9)].map((_, i) => (
+              <div key={i} className="h-4 bg-slate-800/50 rounded border border-slate-700/30"></div>
+            ))}
+         </div>
+         <div className="mt-auto p-2 border-t border-slate-800 flex items-center justify-between">
+            <div className="flex gap-1">
+               <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+               <div className="text-[8px] text-green-500">READY</div>
+            </div>
+            <Table2 className="w-3 h-3 text-slate-500" />
+         </div>
+      </div>
+
+      {/* Card 3: Analytics Dashboard (Front Center) */}
+      <div className={cn(
+        "absolute bottom-0 left-1/2 -translate-x-1/2 w-56 h-40 bg-slate-950 border-2 border-cyan-500/30 rounded-xl shadow-2xl z-30 transform hover:scale-105 transition-all duration-300 group/card3 cursor-pointer overflow-hidden",
+        selected ? "border-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.5)]" : ""
+      )}>
+        {/* Header */}
+        <div className="h-8 bg-cyan-950/30 border-b border-cyan-900/50 flex items-center px-3 justify-between">
+           <span className="text-[10px] font-bold text-cyan-400 tracking-wider">LIVE METRICS</span>
+           <div className="flex gap-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></div>
+           </div>
+        </div>
+        
+        {/* Content */}
+        <div className="p-3 grid grid-cols-2 gap-3 h-full">
+           {/* Donut Chart */}
+           <div className="relative flex items-center justify-center">
+              <svg viewBox="0 0 32 32" className="w-12 h-12 rotate-[-90deg]">
+                 <circle cx="16" cy="16" r="14" fill="none" stroke="#1e293b" strokeWidth="4" />
+                 <circle cx="16" cy="16" r="14" fill="none" stroke="#06b6d4" strokeWidth="4" strokeDasharray="70 100" />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white">
+                 78%
               </div>
            </div>
            
-           {/* Chart 2 */}
-           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 relative">
-              <div className="absolute inset-1 rounded-full border-2 border-purple-500/30 border-t-purple-500"></div>
-              <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-purple-300">85%</div>
-           </div>
-
-           {/* Metric 1 */}
-           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 flex flex-col justify-center px-2">
-              <div className="text-[6px] text-slate-400 uppercase">Revenue</div>
-              <div className="text-[10px] font-bold text-white">$1.2M</div>
-           </div>
-
-           {/* Metric 2 */}
-           <div className="bg-slate-800/50 rounded border border-slate-700/50 p-1 flex flex-col justify-center px-2">
-              <div className="text-[6px] text-slate-400 uppercase">Risk</div>
-              <div className="text-[10px] font-bold text-red-400">High</div>
+           {/* Bar Chart */}
+           <div className="flex items-end justify-between gap-1 pb-4">
+              <div className="w-2 bg-slate-700 h-[40%] rounded-t-[1px]"></div>
+              <div className="w-2 bg-cyan-800 h-[60%] rounded-t-[1px]"></div>
+              <div className="w-2 bg-cyan-600 h-[80%] rounded-t-[1px]"></div>
+              <div className="w-2 bg-cyan-400 h-[100%] rounded-t-[1px]"></div>
            </div>
         </div>
-        
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 transition-colors pointer-events-none"></div>
       </div>
+
     </div>
   );
 };
@@ -548,7 +572,7 @@ const initialNodes: Node[] = [
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'prompt', position: { x: 1050, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'analytics', type: 'analytics', position: { x: 1350, y: 320 }, data: { visible: false } },
+  { id: 'analytics', type: 'analytics', position: { x: 1300, y: 290 }, data: { visible: false } },
   
   // API Mesh Label
   { id: 'lbl-mesh', type: 'pill', position: { x: 565, y: 280 }, data: { label: 'API Mesh', visible: false }, zIndex: 10 },
