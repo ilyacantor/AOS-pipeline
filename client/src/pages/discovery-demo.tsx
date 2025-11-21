@@ -442,7 +442,7 @@ const initialNodes: Node[] = [
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'ontology', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'processing', position: { x: 1100, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   
@@ -891,7 +891,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     const target = event.target as HTMLElement;
     
     // Check if click was on the Ontology Graph image (now part of OntologyNode or standalone check)
-    if ((target.tagName === 'IMG' && target.getAttribute('alt') === 'Ontology Graph') || node.type === 'ontology') {
+    if ((target.tagName === 'IMG' && target.getAttribute('alt') === 'Ontology Graph') || node.id === 'dcl') {
        setExpandedImage(dclGraph);
        return;
     }
