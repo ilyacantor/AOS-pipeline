@@ -961,7 +961,6 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
         defaultEdgeOptions={{ type: 'dataflow', markerEnd: { type: MarkerType.ArrowClosed, color: '#334155' } }}
       >
         <Background color="#1e293b" gap={20} size={1} />
-        <Controls className="bg-slate-800 border-slate-700 text-slate-200" />
         
         {/* Reset Button */}
         <div className="absolute top-4 right-4 z-10">
