@@ -449,6 +449,8 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
+
   useEffect(() => {
     const isRunning = pipelineState === 'running';
     const isComplete = pipelineState === 'complete';
@@ -713,7 +715,27 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
       }, 7500));
 
+      // Safety check: Ensure catalogue edge is visible if catalogue is visible (in case of race conditions)
+      // This is just a precaution, the main logic is above.
+      
       return () => timeouts.forEach(clearTimeout);
+    } else if (pipelineStep > 0) {
+        // Force ensure catalogue edge is visible if we are past step 0
+        setEdges((eds) => eds.map(e => {
+          if (e.id === 'e-aod-cat') {
+            return { ...e, hidden: false, data: { ...e.data, active: true } };
+          }
+          return e;
+        }));
+        
+        setNodes((currentNodes) => 
+          currentNodes.map((node) => {
+            if (node.id === 'catalogue') {
+              return { ...node, hidden: false, style: { ...node.style, opacity: 1 } };
+            }
+            return node;
+          })
+        );
     }
   }, [pipelineState, pipelineStep, setNodes, setEdges]);
 
@@ -819,6 +841,12 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
   }, [pipelineState, pipelineStep, setEdges, setNodes]);
 
   const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    const target = event.target as HTMLElement;
+    // Check if click was on the Ontology Graph image
+    if (target.tagName === 'IMG' && target.getAttribute('alt') === 'Ontology Graph') {
+       setExpandedImage(dclGraph);
+       return;
+    }
     if (onNodeClick) onNodeClick(node.id, node.type || 'default');
   }, [onNodeClick]);
 
@@ -841,6 +869,25 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 
   return (
     <div className="w-full h-full bg-slate-950/50 rounded-xl border border-slate-800/50 overflow-hidden relative">
+      {/* Expanded Image Modal */}
+      {expandedImage && (
+        <div 
+          className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-8 cursor-pointer"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div className="relative max-w-full max-h-full bg-slate-900 border border-slate-700 rounded-lg shadow-2xl overflow-hidden">
+            <img 
+              src={expandedImage} 
+              alt="Expanded View" 
+              className="max-w-full max-h-[85vh] object-contain"
+            />
+            <div className="absolute top-2 right-2 bg-black/50 rounded-full p-1 text-white/70 hover:text-white">
+              <RotateCcw className="w-4 h-4 rotate-45" />
+            </div>
+          </div>
+        </div>
+      )}
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
