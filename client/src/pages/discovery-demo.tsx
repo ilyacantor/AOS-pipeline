@@ -380,19 +380,21 @@ const PillLabelNode = ({ data }: NodeProps) => {
 
 const CatalogueNode = ({ data }: NodeProps) => {
   return (
-    <div className={cn(
-      "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-purple-500/50 cursor-pointer",
-      data.flash ? "ring-4 ring-white shadow-[0_0_50px_rgba(168,85,247,0.8)] scale-105" : "hover:border-purple-400 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:scale-105",
-      "group"
-    )}>
-      <Handle type="target" position={Position.Top} id="top" className="!bg-purple-500 !w-3 !h-3 !-top-1.5" />
-      
-      <div className="absolute inset-0 bg-purple-900/20 backdrop-blur-sm z-0"></div>
-      <img src={catalogueImage} alt="Asset Catalogue" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity z-10" />
-      
-      <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
-        <div className="text-lg font-bold text-purple-200">Asset Catalogue</div>
-        <div className="text-[9px] text-purple-400/80">Unified Inventory</div>
+    <div className="flex flex-col items-center gap-2">
+      {/* Pill Label - Placed above to match Ontology Graph style */}
+      <div className="whitespace-nowrap px-3 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-xs font-medium text-purple-300 shadow-lg backdrop-blur-sm">
+        Asset Catalogue
+      </div>
+
+      <div className={cn(
+        "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-purple-500/50 cursor-pointer",
+        data.flash ? "ring-4 ring-white shadow-[0_0_50px_rgba(168,85,247,0.8)] scale-105" : "hover:border-purple-400 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:scale-105",
+        "group"
+      )}>
+        <Handle type="target" position={Position.Top} id="top" className="!bg-purple-500 !w-3 !h-3 !-top-1.5" />
+        
+        <div className="absolute inset-0 bg-purple-900/20 backdrop-blur-sm z-0"></div>
+        <img src={catalogueImage} alt="Asset Catalogue" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity z-10" />
       </div>
     </div>
   );
