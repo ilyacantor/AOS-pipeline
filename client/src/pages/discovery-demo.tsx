@@ -650,6 +650,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
            // AOD and AAM are never marked complete while running to keep them lit/glowing
            // if (pipelineStep > 1 && node.id === 'aam') complete = true; // REMOVED to keep glow
            // if (pipelineStep > 2 && node.id === 'dcl') complete = true; // REMOVED to keep glow
+        } else {
+           // Idle state logic - Ensure e-dcl-an is hidden by resetting related node state if needed
+           // But edges are handled separately below.
         }
 
         // Handle transformations
@@ -716,6 +719,11 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             if (pipelineStep > 1 && edge.target === 'aam') stroke = '#0bcad9';
             if (pipelineStep > 2 && edge.target === 'dcl') stroke = '#0bcad9';
             if (pipelineStep >= 3 && edge.target === 'analytics') stroke = '#0bcad9';
+         } else {
+            // Idle state - explicit hide for e-dcl-an
+            if (edge.target === 'analytics' && pipelineStep < 3) {
+               // This is redundant with the other effect but safe
+            }
          }
 
          return { ...edge, data: { ...edge.data, active, scanning, beaming }, style: { stroke, strokeWidth: 2 } };
@@ -919,7 +927,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     } else if (pipelineState === 'idle') {
       // Reset everything when not running (End Demo)
       setEdges((eds) => eds.map(e => {
-        if (e.id === 'e-dcl-an') return { ...e, hidden: true, data: { ...e.data, active: false, beaming: false } };
+        if (e.id === 'e-dcl-an') return { ...e, hidden: true, data: { ...e.data, active: false, beaming: false }, animated: false };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         
         // Also reset any beaming/active state for standard edges to ensure clean slate
