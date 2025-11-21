@@ -381,8 +381,8 @@ const PillLabelNode = ({ data }: NodeProps) => {
 const CatalogueNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
-      "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-purple-500/50",
-      data.flash ? "ring-4 ring-white shadow-[0_0_50px_rgba(168,85,247,0.8)] scale-105" : "hover:border-purple-400",
+      "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-purple-500/50 cursor-pointer",
+      data.flash ? "ring-4 ring-white shadow-[0_0_50px_rgba(168,85,247,0.8)] scale-105" : "hover:border-purple-400 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:scale-105",
       "group"
     )}>
       <Handle type="target" position={Position.Top} id="top" className="!bg-purple-500 !w-3 !h-3 !-top-1.5" />
@@ -401,8 +401,10 @@ const CatalogueNode = ({ data }: NodeProps) => {
 const OntologyNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
-      "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-cyan-500/50",
-      data.active ? "ring-4 ring-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.6)] scale-105" : "hover:border-cyan-400",
+      "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-cyan-500/50 cursor-pointer",
+      // Modified active state to be less aggressive so hover effects can show
+      data.active ? "shadow-[0_0_30px_rgba(6,182,212,0.4)] border-cyan-400" : "border-cyan-500/50",
+      "hover:border-cyan-300 hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] hover:scale-105",
       "group"
     )}>
       {/* Handles for DCL */}
