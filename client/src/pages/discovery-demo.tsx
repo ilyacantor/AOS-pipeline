@@ -1672,7 +1672,9 @@ function StepperNavigation({
            className={`p-2 rounded-md transition-all text-xs font-semibold flex items-center justify-center gap-2 ${
              showDetails 
                ? 'bg-orange-500/20 text-orange-400 border border-orange-500/50 shadow-[0_0_10px_rgba(249,115,22,0.3)]' 
-               : 'bg-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 hover:bg-slate-800/80 border border-transparent'
+               : isRunningPipeline
+                 ? 'bg-slate-800 text-orange-400 border border-orange-500/50 shadow-[0_0_10px_rgba(249,115,22,0.3)] animate-pulse'
+                 : 'bg-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 hover:bg-slate-800/80 border border-transparent'
            }`}
            title="Toggle Details"
         >
