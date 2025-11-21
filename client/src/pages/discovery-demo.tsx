@@ -424,6 +424,41 @@ const OntologyNode = ({ data }: NodeProps) => {
   );
 };
 
+const PromptNode = ({ data, selected }: NodeProps) => {
+  return (
+    <div className={cn(
+      "relative flex flex-col items-start justify-center w-64 p-4 rounded-xl bg-slate-900/95 border-2 shadow-xl backdrop-blur-md transition-all duration-300",
+      selected ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "border-slate-700",
+      data.active ? "border-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.4)]" : ""
+    )}>
+      <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 !-left-1" />
+      
+      <div className="flex items-center gap-2 mb-2 w-full">
+        <div className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-300">
+          <Sparkles className="w-4 h-4" />
+        </div>
+        <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">Natural Language Query</span>
+      </div>
+      
+      <div className="w-full bg-slate-950/50 rounded-lg p-3 border border-slate-800/50">
+        <div className="flex items-center gap-2 text-xs text-slate-400 italic">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 animate-pulse"></span>
+          Ask a question...
+        </div>
+      </div>
+
+      {data.active && (
+        <div className="absolute -top-2 -right-2">
+          <span className="flex h-4 w-4 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-cyan-500"></span>
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const nodeTypes = {
   vendor: VendorNode,
   processing: ProcessingNode,
@@ -431,6 +466,7 @@ const nodeTypes = {
   pill: PillLabelNode,
   catalogue: CatalogueNode,
   ontology: OntologyNode,
+  prompt: PromptNode,
 };
 
 const initialNodes: Node[] = [
@@ -446,7 +482,7 @@ const initialNodes: Node[] = [
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'nlp', type: 'processing', position: { x: 1100, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'nlp', type: 'prompt', position: { x: 1050, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   
   // API Mesh Label
   { id: 'lbl-mesh', type: 'pill', position: { x: 565, y: 280 }, data: { label: 'API Mesh', visible: false }, zIndex: 10 },
