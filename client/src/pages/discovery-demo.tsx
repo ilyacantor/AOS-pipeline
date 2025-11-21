@@ -51,6 +51,16 @@ import {
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import dynamicsLogo from '../assets/logos/dynamics_1763689304027.png';
+import hubspotLogo from '../assets/logos/hubspot_1763689304027.png';
+import legacyLogo from '../assets/logos/legacy_sql_1763689304028.png';
+import mongoLogo from '../assets/logos/mongodb_1763689304028.png';
+import netsuiteLogo from '../assets/logos/Netsuite_1763689304029.png';
+import salesforceLogo from '../assets/logos/salesforce_1763689304029.png';
+import sapLogo from '../assets/logos/sap_1763689304029.png';
+import snowflakeLogo from '../assets/logos/snowflake_1763689304030.png';
+import supabaseLogo from '../assets/logos/supabase_1763689304030.png';
+
 // Utility function
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -249,9 +259,22 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
   );
 };
 
+const ImageNode = ({ data }: NodeProps) => {
+  return (
+    <div className={cn(
+      "relative flex items-center justify-center w-10 h-10 rounded-full bg-white p-1.5 shadow-lg transition-all duration-700 ease-out",
+      data.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-4 scale-50"
+    )}>
+      <Handle type="target" position={Position.Top} className="!bg-transparent !w-1 !h-1 !-top-1 border-none" />
+      <img src={data.image} alt="Logo" className="w-full h-full object-contain" />
+    </div>
+  );
+};
+
 const nodeTypes = {
   vendor: VendorNode,
   processing: ProcessingNode,
+  image: ImageNode,
 };
 
 const initialNodes: Node[] = [
@@ -267,6 +290,16 @@ const initialNodes: Node[] = [
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'hexagon' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
+  // Logo Array Nodes (Hidden initially)
+  { id: 'logo-1', type: 'image', position: { x: 520, y: 480 }, data: { image: dynamicsLogo, visible: false } },
+  { id: 'logo-2', type: 'image', position: { x: 600, y: 480 }, data: { image: hubspotLogo, visible: false } },
+  { id: 'logo-3', type: 'image', position: { x: 680, y: 480 }, data: { image: legacyLogo, visible: false } },
+  { id: 'logo-4', type: 'image', position: { x: 520, y: 550 }, data: { image: mongoLogo, visible: false } },
+  { id: 'logo-5', type: 'image', position: { x: 600, y: 550 }, data: { image: netsuiteLogo, visible: false } },
+  { id: 'logo-6', type: 'image', position: { x: 680, y: 550 }, data: { image: salesforceLogo, visible: false } },
+  { id: 'logo-7', type: 'image', position: { x: 520, y: 620 }, data: { image: sapLogo, visible: false } },
+  { id: 'logo-8', type: 'image', position: { x: 600, y: 620 }, data: { image: snowflakeLogo, visible: false } },
+  { id: 'logo-9', type: 'image', position: { x: 680, y: 620 }, data: { image: supabaseLogo, visible: false } },
 ];
 
 const initialEdges: Edge[] = [
@@ -281,6 +314,16 @@ const initialEdges: Edge[] = [
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  // Logo Connections
+  { id: 'e-aam-l1', source: 'aam', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l2', source: 'aam', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l3', source: 'aam', target: 'logo-3', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l4', source: 'aam', target: 'logo-4', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l5', source: 'aam', target: 'logo-5', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l6', source: 'aam', target: 'logo-6', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l7', source: 'aam', target: 'logo-7', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l8', source: 'aam', target: 'logo-8', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l9', source: 'aam', target: 'logo-9', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
 ];
 
 interface GraphViewProps {
@@ -363,17 +406,21 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
   // Effect to handle node transformation during discovery
   useEffect(() => {
     if (pipelineState === 'running' && pipelineStep === 0) {
-      // Reset edges beaming and hidden state for catalogue
+      // Reset edges beaming and hidden state for catalogue AND LOGOS
       setEdges((eds) => eds.map(e => {
         if (e.id === 'e-aod-cat') return { ...e, hidden: true, data: { ...e.data, beaming: false } };
+        if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         return { ...e, data: { ...e.data, beaming: false } };
       }));
       
-      // Reset catalogue node visibility
+      // Reset catalogue node visibility AND LOGOS
       setNodes((currentNodes) => 
         currentNodes.map((node) => {
           if (node.id === 'catalogue') {
             return { ...node, hidden: true, style: { ...node.style, opacity: 0 } };
+          }
+          if (node.type === 'image') {
+            return { ...node, data: { ...node.data, visible: false } };
           }
           const initial = initialNodes.find((n) => n.id === node.id);
           if (initial && (node.id === 'unknown' || node.id === 'shadow1' || node.id === 'shadow2')) {
@@ -556,6 +603,34 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
               return n;
             }));
           }, 500);
+
+          // SPECIAL: If target is AAM (Step 1), reveal logos 1s after flash starts
+          if (targetId === 'aam') {
+            setTimeout(() => {
+              // Reveal edges
+              setEdges((eds) => eds.map(e => {
+                if (e.id.startsWith('e-aam-l')) {
+                  return { ...e, hidden: false, animated: true };
+                }
+                return e;
+              }));
+
+              // Reveal nodes (staggered)
+              const logoIds = ['logo-1', 'logo-2', 'logo-3', 'logo-4', 'logo-5', 'logo-6', 'logo-7', 'logo-8', 'logo-9'];
+              
+              logoIds.forEach((id, index) => {
+                setTimeout(() => {
+                  setNodes((nds) => nds.map(n => {
+                    if (n.id === id) {
+                      return { ...n, data: { ...n.data, visible: true } };
+                    }
+                    return n;
+                  }));
+                }, index * 50); // Quick stagger
+              });
+
+            }, 1000);
+          }
 
         }, 500);
 
