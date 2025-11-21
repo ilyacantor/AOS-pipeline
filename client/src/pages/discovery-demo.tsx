@@ -74,7 +74,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 // Types
-type Stage = 1 | 2 | 3 | 4;
+type Stage = 0 | 1 | 2 | 3 | 4;
 
 // ============================================================================
 // MOCK DATA
@@ -983,7 +983,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
 // ============================================================================
 
 export default function DiscoveryDemoStandalone() {
-  const [currentStage, setCurrentStage] = useState<Stage>(1);
+  const [currentStage, setCurrentStage] = useState<Stage>(0);
   const [isRunningPipeline, setIsRunningPipeline] = useState(false);
 
   useEffect(() => {
@@ -1008,7 +1008,7 @@ export default function DiscoveryDemoStandalone() {
 
   const handleEndDemo = () => {
     setIsRunningPipeline(false);
-    setCurrentStage(1);
+    setCurrentStage(0);
   };
 
   const handleNext = () => {
@@ -1020,6 +1020,8 @@ export default function DiscoveryDemoStandalone() {
   const handleBack = () => {
     if (currentStage > 1) {
       setCurrentStage((prev) => (prev - 1) as Stage);
+    } else if (currentStage === 1) {
+      setCurrentStage(0);
     }
   };
 
@@ -1045,9 +1047,11 @@ export default function DiscoveryDemoStandalone() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-xs text-green-400">
-            Stage {currentStage} of 4
-          </span>
+          {currentStage > 0 && (
+            <span className="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-xs text-green-400">
+              Stage {currentStage} of 4
+            </span>
+          )}
           {isRunningPipeline && (
             <span className="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-xs text-blue-400 flex items-center gap-2">
               <Zap className="w-3 h-3 animate-pulse" />
@@ -1083,6 +1087,11 @@ export default function DiscoveryDemoStandalone() {
                 {currentStage === 2 && <Stage2Content />}
                 {currentStage === 3 && <Stage3Content />}
                 {currentStage === 4 && <Stage4Content />}
+                {currentStage === 0 && (
+                  <div className="text-slate-400 text-sm text-center py-4">
+                    Select a stage or run the pipeline to see details.
+                  </div>
+                )}
              </div>
           </div>
         )}
@@ -1416,11 +1425,11 @@ function StepperNavigation({
             <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors ${
               currentStage === stage.num
                 ? 'bg-cyan-500 text-white'
-                : currentStage > stage.num
+                : currentStage > stage.num && currentStage !== 0
                 ? 'bg-green-500 text-white'
                 : 'bg-slate-700 text-slate-400 group-hover:bg-slate-600'
             }`}>
-              {currentStage > stage.num ? '✓' : stage.num}
+              {currentStage > stage.num && currentStage !== 0 ? '✓' : stage.num}
             </div>
             <div className={`text-xs font-medium whitespace-nowrap ${
               currentStage === stage.num ? 'text-cyan-300' : 'text-slate-400 group-hover:text-slate-300'
@@ -1484,7 +1493,7 @@ function StepperNavigation({
             <div className="flex gap-2">
               <button
                 onClick={onBack}
-                disabled={currentStage === 1}
+                disabled={currentStage <= 1}
                 className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md transition-colors text-xs font-semibold flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="w-3 h-3" />
