@@ -398,12 +398,35 @@ const CatalogueNode = ({ data }: NodeProps) => {
   );
 };
 
+const OntologyNode = ({ data }: NodeProps) => {
+  return (
+    <div className={cn(
+      "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-cyan-500/50",
+      data.active ? "ring-4 ring-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.6)] scale-105" : "hover:border-cyan-400",
+      "group"
+    )}>
+      {/* Handles for DCL */}
+      <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-1.5" />
+      <Handle type="source" position={Position.Right} className="!bg-cyan-500 !w-3 !h-3 !-right-1.5" />
+      
+      <div className="absolute inset-0 bg-cyan-900/20 backdrop-blur-sm z-0"></div>
+      <img src={dclGraph} alt="Ontology Graph" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity z-10" />
+      
+      <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
+        <div className="text-lg font-bold text-cyan-200">Ontology Graph</div>
+        <div className="text-[9px] text-cyan-400/80">Connectivity Layer</div>
+      </div>
+    </div>
+  );
+};
+
 const nodeTypes = {
   vendor: VendorNode,
   processing: ProcessingNode,
   image: ImageNode,
   pill: PillLabelNode,
   catalogue: CatalogueNode,
+  ontology: OntologyNode,
 };
 
 const initialNodes: Node[] = [
@@ -417,7 +440,7 @@ const initialNodes: Node[] = [
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
+  { id: 'dcl', type: 'ontology', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'processing', position: { x: 1100, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   
@@ -865,8 +888,8 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
   const handleNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     const target = event.target as HTMLElement;
     
-    // Check if click was on the Ontology Graph image
-    if (target.tagName === 'IMG' && target.getAttribute('alt') === 'Ontology Graph') {
+    // Check if click was on the Ontology Graph image (now part of OntologyNode or standalone check)
+    if ((target.tagName === 'IMG' && target.getAttribute('alt') === 'Ontology Graph') || node.type === 'ontology') {
        setExpandedImage(dclGraph);
        return;
     }
