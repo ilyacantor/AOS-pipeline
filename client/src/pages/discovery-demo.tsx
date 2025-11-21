@@ -63,6 +63,8 @@ import sapLogo from '../assets/logos/sap_1763689304029.png';
 import snowflakeLogo from '../assets/logos/snowflake_1763689304030.png';
 import supabaseLogo from '../assets/logos/supabase_1763689304030.png';
 
+import dclVideo from '../assets/dcl-video.mp4';
+
 // Utility function
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -200,8 +202,8 @@ const VendorNode = ({ data, selected }: NodeProps) => {
       data.glowRed ? "border-red-500 shadow-[0_0_20px_-3px_rgba(239,68,68,0.6)]" : "",
       data.glowGreen ? "border-green-500 shadow-[0_0_20px_-3px_rgba(34,197,94,0.6)]" : ""
     )}>
-      {/* Top Target Handle for Catalogue */}
-      <Handle type="target" position={Position.Top} id="top-target" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
+      <Handle type="target" position={Position.Top} className="!bg-slate-600 !w-2 !h-2 !-top-1" />
+      <Handle type="target" position={Position.Bottom} className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       
       <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2" />
       <div className={cn("p-2 rounded bg-slate-950/50", data.color)}>
@@ -219,11 +221,16 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
   const isHex = data.shape === 'hexagon';
   
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex flex-col items-center justify-center">
+      {/* Top Source Handle for AAM -> Logos */}
+      {data.label === 'AAM' && (
+         <Handle type="source" position={Position.Top} id="top-source" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
+      )}
+
       <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 -ml-1" />
       <div 
         className={cn(
-          "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md",
+          "flex flex-col items-center justify-center gap-2 transition-all bg-slate-900/90 border-2 shadow-xl backdrop-blur-md relative z-10",
           isHex ? "w-32 h-32" : "w-32 h-32 rounded-full",
           selected ? "border-primary shadow-[0_0_20px_-5px_rgba(11,202,217,0.5)]" : "border-slate-700",
           // Enhanced glow for AOD
@@ -257,6 +264,20 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
       {data.label === 'AOD' && (
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       )}
+
+      {/* Bottom Media Attachment (DCL) */}
+      {data.bottomMedia && (
+        <div className="absolute top-full mt-4 w-32 h-20 bg-slate-900/80 rounded-lg border border-slate-700 overflow-hidden shadow-lg backdrop-blur-sm">
+          <video 
+            src={data.bottomMedia} 
+            className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -265,10 +286,22 @@ const ImageNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
       "relative flex items-center justify-center w-10 h-10 rounded-full bg-white p-1.5 shadow-lg transition-all duration-700 ease-out",
-      data.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 -translate-y-4 scale-50"
+      data.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-50"
     )}>
-      <Handle type="target" position={Position.Top} className="!bg-transparent !w-1 !h-1 !-top-1 border-none" />
+      {/* Connect from Bottom (since they are above AAM) */}
+      <Handle type="target" position={Position.Bottom} className="!bg-transparent !w-1 !h-1 !-bottom-1 border-none" />
       <img src={data.image} alt="Logo" className="w-full h-full object-contain" />
+    </div>
+  );
+};
+
+const PillLabelNode = ({ data }: NodeProps) => {
+  return (
+    <div className={cn(
+      "px-3 py-1 rounded-full bg-slate-900/90 border border-cyan-500/50 text-[10px] font-bold text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.3)] backdrop-blur-sm transition-all duration-500",
+      data.visible ? "opacity-100 scale-100" : "opacity-0 scale-90"
+    )}>
+      {data.label}
     </div>
   );
 };
@@ -277,6 +310,7 @@ const nodeTypes = {
   vendor: VendorNode,
   processing: ProcessingNode,
   image: ImageNode,
+  pill: PillLabelNode,
 };
 
 const initialNodes: Node[] = [
@@ -290,18 +324,22 @@ const initialNodes: Node[] = [
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'vendor', position: { x: 350, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue', sub: 'Unified Inventory', icon: <Table2 className="w-5 h-5" />, color: 'text-purple-400' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'hexagon' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomMedia: dclVideo } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
-  // Logo Array Nodes (Hidden initially)
-  { id: 'logo-1', type: 'image', position: { x: 520, y: 480 }, data: { image: dynamicsLogo, visible: false } },
-  { id: 'logo-2', type: 'image', position: { x: 600, y: 480 }, data: { image: hubspotLogo, visible: false } },
-  { id: 'logo-3', type: 'image', position: { x: 680, y: 480 }, data: { image: legacyLogo, visible: false } },
-  { id: 'logo-4', type: 'image', position: { x: 520, y: 550 }, data: { image: mongoLogo, visible: false } },
-  { id: 'logo-5', type: 'image', position: { x: 600, y: 550 }, data: { image: netsuiteLogo, visible: false } },
-  { id: 'logo-6', type: 'image', position: { x: 680, y: 550 }, data: { image: salesforceLogo, visible: false } },
-  { id: 'logo-7', type: 'image', position: { x: 520, y: 620 }, data: { image: sapLogo, visible: false } },
-  { id: 'logo-8', type: 'image', position: { x: 600, y: 620 }, data: { image: snowflakeLogo, visible: false } },
-  { id: 'logo-9', type: 'image', position: { x: 680, y: 620 }, data: { image: supabaseLogo, visible: false } },
+  
+  // API Mesh Label
+  { id: 'lbl-mesh', type: 'pill', position: { x: 572, y: 290 }, data: { label: 'API Mesh', visible: false }, zIndex: 10 },
+
+  // Logo Array Nodes (Moved Above AAM)
+  { id: 'logo-1', type: 'image', position: { x: 520, y: 220 }, data: { image: dynamicsLogo, visible: false } },
+  { id: 'logo-2', type: 'image', position: { x: 600, y: 220 }, data: { image: hubspotLogo, visible: false } },
+  { id: 'logo-3', type: 'image', position: { x: 680, y: 220 }, data: { image: legacyLogo, visible: false } },
+  { id: 'logo-4', type: 'image', position: { x: 520, y: 150 }, data: { image: mongoLogo, visible: false } },
+  { id: 'logo-5', type: 'image', position: { x: 600, y: 150 }, data: { image: netsuiteLogo, visible: false } },
+  { id: 'logo-6', type: 'image', position: { x: 680, y: 150 }, data: { image: salesforceLogo, visible: false } },
+  { id: 'logo-7', type: 'image', position: { x: 520, y: 80 }, data: { image: sapLogo, visible: false } },
+  { id: 'logo-8', type: 'image', position: { x: 600, y: 80 }, data: { image: snowflakeLogo, visible: false } },
+  { id: 'logo-9', type: 'image', position: { x: 680, y: 80 }, data: { image: supabaseLogo, visible: false } },
 ];
 
 const initialEdges: Edge[] = [
@@ -316,16 +354,16 @@ const initialEdges: Edge[] = [
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  // Logo Connections
-  { id: 'e-aam-l1', source: 'aam', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l2', source: 'aam', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l3', source: 'aam', target: 'logo-3', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l4', source: 'aam', target: 'logo-4', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l5', source: 'aam', target: 'logo-5', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l6', source: 'aam', target: 'logo-6', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l7', source: 'aam', target: 'logo-7', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l8', source: 'aam', target: 'logo-8', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
-  { id: 'e-aam-l9', source: 'aam', target: 'logo-9', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  // Logo Connections (From AAM Top to Logos Bottom)
+  { id: 'e-aam-l1', source: 'aam', sourceHandle: 'top-source', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l2', source: 'aam', sourceHandle: 'top-source', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l3', source: 'aam', sourceHandle: 'top-source', target: 'logo-3', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l4', source: 'aam', sourceHandle: 'top-source', target: 'logo-4', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l5', source: 'aam', sourceHandle: 'top-source', target: 'logo-5', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l6', source: 'aam', sourceHandle: 'top-source', target: 'logo-6', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l7', source: 'aam', sourceHandle: 'top-source', target: 'logo-7', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l8', source: 'aam', sourceHandle: 'top-source', target: 'logo-8', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
+  { id: 'e-aam-l9', source: 'aam', sourceHandle: 'top-source', target: 'logo-9', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
 ];
 
 interface GraphViewProps {
@@ -415,13 +453,16 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
         return { ...e, data: { ...e.data, beaming: false } };
       }));
       
-      // Reset catalogue node visibility AND LOGOS
+      // Reset catalogue node visibility AND LOGOS AND LABEL
       setNodes((currentNodes) => 
         currentNodes.map((node) => {
           if (node.id === 'catalogue') {
             return { ...node, hidden: true, style: { ...node.style, opacity: 0 } };
           }
           if (node.type === 'image') {
+            return { ...node, data: { ...node.data, visible: false } };
+          }
+          if (node.id === 'lbl-mesh') {
             return { ...node, data: { ...node.data, visible: false } };
           }
           const initial = initialNodes.find((n) => n.id === node.id);
@@ -649,6 +690,14 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                   return { ...e, hidden: false, animated: true };
                 }
                 return e;
+              }));
+              
+              // Reveal Label
+              setNodes((nds) => nds.map(n => {
+                if (n.id === 'lbl-mesh') {
+                  return { ...n, data: { ...n.data, visible: true } };
+                }
+                return n;
               }));
 
               // Reveal nodes (staggered)
