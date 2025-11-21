@@ -1188,8 +1188,32 @@ export default function DiscoveryDemoStandalone() {
 
   useEffect(() => {
     if (isRunningPipeline) {
-      // No auto-advancement. The user must manually click "Continue" to proceed to the next stage.
-      // This ensures we pause at each stage (AOD, AAM, DCL, Agents) as requested.
+      // Auto-advancement logic
+      let timer: NodeJS.Timeout;
+
+      if (currentStage === 1) {
+        // Stage 1 (AOD): Discovery (3s + 1s + 1s) + Catalogue (2s) + buffer ~ 8s total
+        timer = setTimeout(() => {
+          setCurrentStage(2);
+        }, 8500);
+      } else if (currentStage === 2) {
+        // Stage 2 (AAM): Beam + Logos + Label ~ 3s
+        timer = setTimeout(() => {
+          setCurrentStage(3);
+        }, 3000);
+      } else if (currentStage === 3) {
+        // Stage 3 (DCL): Beam + Ontology ~ 3s
+        timer = setTimeout(() => {
+          setCurrentStage(4);
+        }, 3000);
+      } else if (currentStage === 4) {
+        // Stage 4 (Agents): Final stage, stop pipeline running state but keep stage 4 active
+        timer = setTimeout(() => {
+          setIsRunningPipeline(false);
+        }, 4000);
+      }
+
+      return () => clearTimeout(timer);
     }
   }, [isRunningPipeline, currentStage]);
 
