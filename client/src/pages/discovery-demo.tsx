@@ -68,6 +68,7 @@ import supabaseLogo from '../assets/logos/supabase_1763689304030.png';
 import dclVideo from '../assets/dcl-video.mp4';
 import dclGraph from '../assets/dcl-graph.png';
 import catalogueImage from '../assets/catalogue-dashboard.png';
+import mainLogo from '../assets/logo-full.png';
 
 // Utility function
 function cn(...inputs: ClassValue[]) {
@@ -1262,10 +1263,11 @@ export default function DiscoveryDemoStandalone() {
       {/* Top Bar */}
       <div className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold text-white">AutonomOS – Discovery & Mesh Demo</h1>
-          <span className="px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-xs text-cyan-400 font-semibold">
-            Demo Tenant
-          </span>
+          <img src={mainLogo} alt="AutonomOS" className="h-8" />
+          <div className="h-6 w-px bg-slate-700"></div>
+          <h1 className="text-xl font-bold text-white">
+            Platform Visualization
+          </h1>
         </div>
         <div className="flex items-center gap-2">
           {currentStage > 0 && (
