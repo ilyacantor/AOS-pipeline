@@ -267,18 +267,18 @@ const VendorNode = ({ data, selected }: NodeProps) => {
   );
 };
 
-const ProcessingNode = ({ data, selected }: NodeProps) => {
+const ProcessingNode = ({ id, data, selected }: NodeProps) => {
   const isHex = data.shape === 'hexagon';
   
   return (
     <div className="relative flex flex-col items-center justify-center">
       {/* Top Source Handle for AAM -> Logos */}
-      {data.label === 'AAM' && (
+      {id === 'aam' && (
          <Handle type="source" position={Position.Top} id="top-source" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
       )}
 
       {/* Explicit Right Source Handle for AAM -> DCL */}
-      {data.label === 'AAM' && (
+      {id === 'aam' && (
          <Handle type="source" position={Position.Right} id="right-source" className="!bg-slate-600 !w-2 !h-2 !-right-1" />
       )}
 
@@ -316,7 +316,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
       <Handle type="source" position={Position.Right} className="!bg-slate-600 !w-2 !h-2 -mr-1" />
       
       {/* Bottom Source Handle for AOD -> Catalogue */}
-      {data.label === 'AOD' && (
+      {id === 'aod' && (
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       )}
 
