@@ -593,7 +593,6 @@ const initialEdges: Edge[] = [
   { id: 'e-sh1-aod', source: 'shadow1', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-sh2-aod', source: 'shadow2', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 }, zIndex: 5, data: { pathType: 'straight' } },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
@@ -729,7 +728,6 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     if (pipelineState === 'running' && pipelineStep === 0) {
       // Reset edges beaming and hidden state for catalogue AND LOGOS AND ANALYTICS
       setEdges((eds) => eds.map(e => {
-        if (e.id === 'e-aod-cat') return { ...e, hidden: true, data: { ...e.data, beaming: false } };
         if (e.id === 'e-ag-an') return { ...e, hidden: true, data: { ...e.data, active: false } };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         return { ...e, data: { ...e.data, beaming: false } };
@@ -897,9 +895,6 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
         );
         
         setEdges((eds) => eds.map(e => {
-          if (e.id === 'e-aod-cat') {
-            return { ...e, hidden: false, data: { ...e.data, active: true } }; // Reveal edge and make it active
-          }
           return e;
         }));
 
@@ -924,7 +919,6 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     } else if (pipelineState === 'idle') {
       // Reset everything when not running (End Demo)
       setEdges((eds) => eds.map(e => {
-        if (e.id === 'e-aod-cat') return { ...e, hidden: true, data: { ...e.data, beaming: false, active: false } };
         if (e.id === 'e-dcl-an') return { ...e, hidden: true, data: { ...e.data, active: false, beaming: false } };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         
@@ -968,9 +962,6 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     } else if (pipelineStep > 0) {
         // Force ensure catalogue edge is visible if we are past step 0
         setEdges((eds) => eds.map(e => {
-          if (e.id === 'e-aod-cat') {
-            return { ...e, hidden: false, data: { ...e.data, active: true } };
-          }
           return e;
         }));
     }
