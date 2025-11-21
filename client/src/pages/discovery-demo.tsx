@@ -157,10 +157,22 @@ const DataFlowEdge = ({
   return (
     <>
       <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
-      {data?.active && (
+      {data?.active && !data?.biDirectional && (
         <circle r="4" fill="#0bcad9">
           <animateMotion dur="1.5s" repeatCount="indefinite" path={edgePath} />
         </circle>
+      )}
+
+      {/* Bi-directional pulse (Forward + Backward) */}
+      {data?.active && data?.biDirectional && (
+        <>
+          <circle r="4" fill="#0bcad9">
+            <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+          </circle>
+          <circle r="4" fill="#a855f7">
+             <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} keyPoints="1;0" keyTimes="0;1" calcMode="linear" />
+          </circle>
+        </>
       )}
       {data?.scanning && (
         <circle r="3" fill="#ffffff">
@@ -174,6 +186,26 @@ const DataFlowEdge = ({
           />
         </circle>
       )}
+      
+      {/* Normal forward pulse */}
+      {data?.active && !data?.biDirectional && (
+        <circle r="4" fill="#0bcad9">
+          <animateMotion dur="1.5s" repeatCount="indefinite" path={edgePath} />
+        </circle>
+      )}
+
+      {/* Bi-directional pulse (Forward + Backward) */}
+      {data?.active && data?.biDirectional && (
+        <>
+          <circle r="4" fill="#0bcad9">
+            <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+          </circle>
+          <circle r="4" fill="#a855f7">
+             <animateMotion dur="2s" repeatCount="indefinite" path={edgePath} keyPoints="1;0" keyTimes="0;1" calcMode="linear" />
+          </circle>
+        </>
+      )}
+
       {data?.beaming && (
         <circle r="3" fill="#ffffff">
           <animateMotion 
@@ -313,7 +345,7 @@ const ProcessingNode = ({ data, selected }: NodeProps) => {
 const ImageNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
-      "relative flex items-center justify-center w-10 h-10 rounded-full bg-white p-1.5 shadow-lg transition-all duration-700 ease-out",
+      "relative flex items-center justify-center w-10 h-10 rounded-full bg-white/70 p-1.5 shadow-lg transition-all duration-700 ease-out backdrop-blur-sm",
       data.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-50"
     )}>
       {/* Connect from Bottom (since they are above AAM) */}
@@ -379,7 +411,7 @@ const initialEdges: Edge[] = [
   { id: 'e-sh1-aod', source: 'shadow1', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-sh2-aod', source: 'shadow2', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top-target', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top-target', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 }, zIndex: 5 },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
@@ -464,7 +496,12 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             if (pipelineStep === 3 && (
                 (edge.source === 'dcl' && edge.target === 'agents') || 
                 (edge.source === 'dcl' && edge.target === 'nlp')
-              )) { active = true; stroke = '#0bcad9'; }
+              )) { 
+                active = true; 
+                stroke = '#0bcad9'; 
+                // Add bi-directional flag
+                edge.data = { ...edge.data, biDirectional: true };
+              }
             
             if (pipelineStep > 0 && edge.target === 'aod') stroke = '#0bcad9';
             if (pipelineStep > 1 && edge.target === 'aam') stroke = '#0bcad9';
