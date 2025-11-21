@@ -919,6 +919,48 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       // This is just a precaution, the main logic is above.
       
       return () => timeouts.forEach(clearTimeout);
+    } else if (pipelineState === 'idle') {
+      // Reset everything when not running (End Demo)
+      setEdges((eds) => eds.map(e => {
+        if (e.id === 'e-aod-cat') return { ...e, hidden: true, data: { ...e.data, beaming: false, active: false } };
+        if (e.id === 'e-dcl-an') return { ...e, hidden: true, data: { ...e.data, active: false, beaming: false } };
+        if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
+        return { ...e, data: { ...e.data, beaming: false, active: false, scanning: false } };
+      }));
+      
+      setNodes((currentNodes) => 
+        currentNodes.map((node) => {
+          if (node.id === 'catalogue') return { ...node, hidden: true, style: { ...node.style, opacity: 0 } };
+          if (node.id === 'analytics') return { ...node, data: { ...node.data, visible: false } };
+          if (node.type === 'image') return { ...node, data: { ...node.data, visible: false } };
+          if (node.id === 'lbl-mesh') return { ...node, data: { ...node.data, visible: false } };
+          if (node.id === 'dcl') return { ...node, data: { ...node.data, showBottom: false, active: false, complete: false } };
+          if (node.type === 'processing') return { ...node, data: { ...node.data, active: false, complete: false } };
+          if (node.type === 'prompt') return { ...node, data: { ...node.data, active: false } };
+          
+          // Reset Vendors
+          const initial = initialNodes.find((n) => n.id === node.id);
+          if (initial && (node.id === 'unknown' || node.id === 'shadow1' || node.id === 'shadow2')) {
+             return {
+              ...node,
+              data: {
+                ...node.data,
+                label: initial.data.label,
+                sub: initial.data.sub,
+                icon: initial.data.icon,
+                color: initial.data.color,
+                flash: false,
+                glowRed: false,
+                glowGreen: false,
+                active: false
+              }
+            };
+          }
+          if (node.type === 'vendor') return { ...node, data: { ...node.data, active: false, flash: false, glowGreen: false, glowRed: false } };
+          
+          return node;
+        })
+      );
     } else if (pipelineStep > 0) {
         // Force ensure catalogue edge is visible if we are past step 0
         setEdges((eds) => eds.map(e => {
