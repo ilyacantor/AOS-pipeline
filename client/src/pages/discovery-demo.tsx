@@ -1662,66 +1662,26 @@ function StepperNavigation({
               <span className="font-bold">Running...</span>
             </div>
             
-            {currentStage < 4 ? (
-              <button
-                onClick={onContinuePipeline}
-                className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-md transition-colors text-xs font-bold flex items-center gap-2 whitespace-nowrap"
-              >
-                Continue
-                <ChevronRight className="w-3 h-3" />
-              </button>
-            ) : (
-              <button
-                onClick={onRunFullPipeline}
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md transition-colors text-xs font-bold flex items-center gap-2 whitespace-nowrap"
-              >
-                <Play className="w-3 h-3" />
-                Restart
-              </button>
-            )}
-            
             <button
               onClick={onEndDemo}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md transition-colors text-xs font-semibold whitespace-nowrap"
+              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md transition-colors text-xs font-bold flex items-center gap-2 whitespace-nowrap"
             >
-              End Demo
+              <Play className="w-3 h-3" />
+              Restart
             </button>
           </>
         ) : (
           <>
-            <div className="flex gap-2">
-              <button
-                onClick={onBack}
-                disabled={currentStage <= 1}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md transition-colors text-xs font-semibold flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="w-3 h-3" />
-              </button>
-              <button
-                onClick={onNext}
-                disabled={currentStage === 4}
-                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-md transition-colors text-xs font-semibold flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="w-3 h-3" />
-              </button>
-            </div>
-            
             <button
               onClick={onRunFullPipeline}
               className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-md transition-colors text-xs font-bold flex items-center gap-2 whitespace-nowrap"
             >
               <Play className="w-3 h-3" />
-              Run Pipeline
-            </button>
-
-            <button
-              onClick={onEndDemo}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-md transition-colors text-xs font-semibold hover:text-white whitespace-nowrap"
-            >
-              End Demo
+              Run Demo
             </button>
           </>
         )}
+
       </div>
     </div>
   );
