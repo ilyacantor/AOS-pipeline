@@ -780,6 +780,15 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             if (node.id === 'catalogue') {
               return { ...node, hidden: false, style: { ...node.style, opacity: 1 } };
             }
+            if (node.id === 'dcl' && pipelineStep >= 2) {
+               return { ...node, data: { ...node.data, showBottom: true } };
+            }
+            return node;
+          })
+        );
+    } else if (pipelineStep >= 2) {
+         setNodes((currentNodes) => 
+          currentNodes.map((node) => {
             if (node.id === 'dcl') {
                return { ...node, data: { ...node.data, showBottom: true } };
             }
