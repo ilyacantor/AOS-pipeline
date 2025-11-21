@@ -925,7 +925,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
         if (e.id === 'e-aod-cat') return { ...e, hidden: true, data: { ...e.data, beaming: false, active: false } };
         if (e.id === 'e-dcl-an') return { ...e, hidden: true, data: { ...e.data, active: false, beaming: false } };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
-        return { ...e, data: { ...e.data, beaming: false, active: false, scanning: false } };
+        
+        // Also reset any beaming/active state for standard edges to ensure clean slate
+        return { ...e, data: { ...e.data, beaming: false, active: false, scanning: false, biDirectional: false }, style: { ...e.style, stroke: '#334155' } };
       }));
       
       setNodes((currentNodes) => 
