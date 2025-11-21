@@ -467,11 +467,6 @@ const AnalyticsNode = ({ data, selected }: NodeProps) => {
     )}>
       <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-4 !top-1/2" />
       
-      {/* Pill Label - Centered above the group */}
-      <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-cyan-300 shadow-lg backdrop-blur-sm z-50">
-        Analytical Reports
-      </div>
-
       {/* Card 1: Document/Report (Back Left) */}
       <div className="absolute top-4 left-0 w-48 h-36 bg-slate-800 border border-slate-600 rounded-lg shadow-lg transform -rotate-6 hover:rotate-0 hover:z-40 transition-all duration-500 p-3 flex flex-col gap-2 group/card1 cursor-pointer">
          <div className="w-1/3 h-2 bg-slate-600 rounded mb-1"></div>
