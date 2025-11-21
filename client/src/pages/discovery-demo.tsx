@@ -562,7 +562,7 @@ const initialNodes: Node[] = [
   { id: 'shadow2', type: 'vendor', position: { x: 50, y: 550 }, data: { label: 'Shadow IT', sub: 'Unknown AWS Acct', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500' } },
   { id: 'unknown', type: 'vendor', position: { x: 50, y: 650 }, data: { label: '????', sub: 'Unidentified Protocol', icon: <HelpCircle className="w-5 h-5" />, color: 'text-slate-400' } },
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
+  { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 500 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
