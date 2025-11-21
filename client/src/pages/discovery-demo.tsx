@@ -1056,8 +1056,8 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
        return;
     }
 
-    // Check if click was on the Asset Catalogue image
-    if ((target.tagName === 'IMG' && target.getAttribute('alt') === 'Asset Catalogue') || node.type === 'catalogue') {
+    // Check if click was on the Asset Catalogue image OR the AOD node
+    if ((target.tagName === 'IMG' && target.getAttribute('alt') === 'Asset Catalogue') || node.type === 'catalogue' || node.id === 'aod') {
       setExpandedImage(catalogueImage);
       return;
     }
