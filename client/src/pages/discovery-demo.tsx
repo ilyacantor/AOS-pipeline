@@ -1008,6 +1008,7 @@ export default function DiscoveryDemoStandalone() {
 
   const handleEndDemo = () => {
     setIsRunningPipeline(false);
+    setCurrentStage(1);
   };
 
   const handleNext = () => {
@@ -1447,7 +1448,7 @@ function StepperNavigation({
               onClick={onEndDemo}
               className="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-md transition-colors text-xs font-semibold"
             >
-              Stop Demo
+              End Demo
             </button>
           </>
         ) : (
@@ -1477,6 +1478,13 @@ function StepperNavigation({
             >
               <Play className="w-3 h-3" />
               Run Pipeline
+            </button>
+
+            <button
+              onClick={onEndDemo}
+              className="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-md transition-colors text-xs font-semibold hover:text-white"
+            >
+              End Demo
             </button>
           </>
         )}
