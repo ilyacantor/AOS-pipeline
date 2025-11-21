@@ -66,6 +66,7 @@ import supabaseLogo from '../assets/logos/supabase_1763689304030.png';
 
 import dclVideo from '../assets/dcl-video.mp4';
 import dclGraph from '../assets/dcl-graph.png';
+import catalogueImage from '@assets/generated_images/futuristic_asset_catalogue_ui_card.png';
 
 // Utility function
 function cn(...inputs: ClassValue[]) {
@@ -377,11 +378,32 @@ const PillLabelNode = ({ data }: NodeProps) => {
   );
 };
 
+const CatalogueNode = ({ data }: NodeProps) => {
+  return (
+    <div className={cn(
+      "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 border-purple-500/50",
+      data.flash ? "ring-4 ring-white shadow-[0_0_50px_rgba(168,85,247,0.8)] scale-105" : "hover:border-purple-400",
+      "group"
+    )}>
+      <Handle type="target" position={Position.Top} id="top" className="!bg-purple-500 !w-3 !h-3 !-top-1.5" />
+      
+      <div className="absolute inset-0 bg-purple-900/20 backdrop-blur-sm z-0"></div>
+      <img src={catalogueImage} alt="Asset Catalogue" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity z-10" />
+      
+      <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
+        <div className="text-xs font-bold text-purple-200">Asset Catalogue</div>
+        <div className="text-[9px] text-purple-400/80">Unified Inventory</div>
+      </div>
+    </div>
+  );
+};
+
 const nodeTypes = {
   vendor: VendorNode,
   processing: ProcessingNode,
   image: ImageNode,
   pill: PillLabelNode,
+  catalogue: CatalogueNode,
 };
 
 const initialNodes: Node[] = [
@@ -393,7 +415,7 @@ const initialNodes: Node[] = [
   { id: 'shadow2', type: 'vendor', position: { x: 50, y: 550 }, data: { label: 'Shadow IT', sub: 'Unknown AWS Acct', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500' } },
   { id: 'unknown', type: 'vendor', position: { x: 50, y: 650 }, data: { label: '????', sub: 'Unidentified Protocol', icon: <HelpCircle className="w-5 h-5" />, color: 'text-slate-400' } },
   { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'catalogue', type: 'vendor', position: { x: 350, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue', sub: 'Unified Inventory', icon: <Table2 className="w-5 h-5" />, color: 'text-purple-400' } },
+  { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 550 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'DCL', sub: 'Connectivity', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'agents', type: 'processing', position: { x: 1100, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
@@ -422,7 +444,7 @@ const initialEdges: Edge[] = [
   { id: 'e-sh1-aod', source: 'shadow1', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-sh2-aod', source: 'shadow2', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top-target', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 }, zIndex: 5 },
+  { id: 'e-aod-cat', source: 'aod', sourceHandle: 'bottom-source', target: 'catalogue', targetHandle: 'top', type: 'dataflow', hidden: true, animated: false, style: { stroke: '#334155', strokeWidth: 2 }, zIndex: 5 },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
