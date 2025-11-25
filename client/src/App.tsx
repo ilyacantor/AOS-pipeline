@@ -8,10 +8,12 @@ import DiscoveryDemoStandalone from "@/pages/discovery-demo";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={DiscoveryDemoStandalone} />
-      <Route component={NotFound} />
-    </Switch>
+    <div className="h-screen overflow-hidden">
+      <Switch>
+        <Route path="/" component={DiscoveryDemoStandalone} />
+        <Route component={NotFound} />
+      </Switch>
+    </div>
   );
 }
 
