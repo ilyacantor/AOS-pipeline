@@ -1267,7 +1267,7 @@ export default function DiscoveryDemoStandalone() {
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="flex flex-col h-screen bg-slate-950 text-white" style={{ fontFamily: 'Quicksand, sans-serif' }}>
+    <div className="flex flex-col h-full bg-slate-950 text-white" style={{ fontFamily: 'Quicksand, sans-serif' }}>
       {/* Top Bar */}
       <div className="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">

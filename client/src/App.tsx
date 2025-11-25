@@ -44,7 +44,7 @@ function Router() {
         <NavLink href="/figma">Figma Design</NavLink>
       </nav>
       
-      <div className="flex-1 overflow-hidden p-4">
+      <div className="flex-1 overflow-hidden">
         <Switch>
           <Route path="/" component={DiscoveryDemoStandalone} />
           <Route path="/figma" component={FigmaDesign} />
