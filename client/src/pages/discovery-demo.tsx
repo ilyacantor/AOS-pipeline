@@ -500,9 +500,9 @@ const AnalyticsNode = ({ data, selected }: NodeProps) => {
          </div>
       </div>
 
-      {/* Card 2: AWS Utilization Trend (Top Right) */}
+      {/* Card 2: Network Uptime Trend (Top Right) */}
       <div className="absolute top-2 right-0 w-44 h-28 bg-slate-900 border border-orange-500/40 rounded-lg shadow-lg transform rotate-2 hover:rotate-0 hover:z-40 hover:scale-105 transition-all duration-500 p-2 flex flex-col cursor-pointer overflow-hidden">
-         <div className="text-[9px] font-bold text-orange-400 mb-1">AWS Utilization</div>
+         <div className="text-[9px] font-bold text-orange-400 mb-1">Network Uptime</div>
          <div className="flex-1 flex items-end px-1">
            <svg viewBox="0 0 80 30" className="w-full h-full" preserveAspectRatio="none">
              <defs>
