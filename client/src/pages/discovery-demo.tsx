@@ -472,12 +472,30 @@ const AnalyticsNode = ({ data, selected }: NodeProps) => {
       <div className="absolute top-0 left-0 w-44 h-28 bg-slate-900 border border-purple-500/40 rounded-lg shadow-lg transform -rotate-3 hover:rotate-0 hover:z-40 hover:scale-105 transition-all duration-500 p-2 flex flex-col cursor-pointer overflow-hidden">
          <div className="text-[9px] font-bold text-purple-400 mb-1">Pipeline</div>
          <div className="flex-1 flex items-center justify-center">
-           <svg viewBox="0 0 60 40" className="w-full h-full">
-             <path d="M5,5 L55,5 L45,15 L45,35 L15,35 L15,15 Z" fill="none" stroke="#a855f7" strokeWidth="1.5" opacity="0.3"/>
-             <path d="M10,8 L50,8 L42,16 L42,32 L18,32 L18,16 Z" fill="none" stroke="#a855f7" strokeWidth="1.5" opacity="0.5"/>
-             <path d="M15,11 L45,11 L39,17 L39,29 L21,29 L21,17 Z" fill="none" stroke="#a855f7" strokeWidth="1.5" opacity="0.7"/>
-             <path d="M20,14 L40,14 L36,18 L36,26 L24,26 L24,18 Z" fill="#a855f7" opacity="0.3"/>
-             <text x="30" y="22" textAnchor="middle" fill="#c084fc" fontSize="5" fontWeight="bold">847</text>
+           <svg viewBox="0 0 80 50" className="w-full h-full">
+             {/* Stage 1: Leads - widest */}
+             <polygon points="5,2 75,2 70,8 10,8" fill="#c084fc" opacity="0.9"/>
+             <text x="40" y="6.5" textAnchor="middle" fill="#1e1b4b" fontSize="3.5" fontWeight="bold">Leads</text>
+             
+             {/* Stage 2: Qualified */}
+             <polygon points="10,10 70,10 64,16 16,16" fill="#a855f7" opacity="0.85"/>
+             <text x="40" y="14.5" textAnchor="middle" fill="#1e1b4b" fontSize="3.5" fontWeight="bold">Qualified</text>
+             
+             {/* Stage 3: Demo */}
+             <polygon points="16,18 64,18 58,24 22,24" fill="#9333ea" opacity="0.8"/>
+             <text x="40" y="22.5" textAnchor="middle" fill="#faf5ff" fontSize="3.5" fontWeight="bold">Demo</text>
+             
+             {/* Stage 4: Proposal */}
+             <polygon points="22,26 58,26 52,32 28,32" fill="#7c3aed" opacity="0.85"/>
+             <text x="40" y="30.5" textAnchor="middle" fill="#faf5ff" fontSize="3.5" fontWeight="bold">Proposal</text>
+             
+             {/* Stage 5: Negotiation */}
+             <polygon points="28,34 52,34 47,40 33,40" fill="#6d28d9" opacity="0.9"/>
+             <text x="40" y="38.5" textAnchor="middle" fill="#faf5ff" fontSize="3.5" fontWeight="bold">Negotiate</text>
+             
+             {/* Stage 6: Closed Won */}
+             <polygon points="33,42 47,42 44,48 36,48" fill="#22c55e" opacity="1"/>
+             <text x="40" y="46.5" textAnchor="middle" fill="#052e16" fontSize="3.5" fontWeight="bold">Won</text>
            </svg>
          </div>
       </div>
