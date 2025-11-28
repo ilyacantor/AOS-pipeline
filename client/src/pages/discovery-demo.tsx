@@ -463,79 +463,101 @@ const PromptNode = ({ data, selected }: NodeProps) => {
 const AnalyticsNode = ({ data, selected }: NodeProps) => {
   return (
     <div className={cn(
-      "relative w-80 h-60 transition-all duration-700 ease-out",
+      "relative w-[420px] h-72 transition-all duration-700 ease-out",
       data.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
     )}>
       <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-4 !top-1/2" />
       
-      {/* Card 1: Document/Report (Back Left) */}
-      <div className="absolute top-4 left-0 w-48 h-36 bg-slate-800 border border-slate-600 rounded-lg shadow-lg transform -rotate-6 hover:rotate-0 hover:z-40 transition-all duration-500 p-3 flex flex-col gap-2 group/card1 cursor-pointer">
-         <div className="w-1/3 h-2 bg-slate-600 rounded mb-1"></div>
-         <div className="w-full h-1 bg-slate-700 rounded"></div>
-         <div className="w-full h-1 bg-slate-700 rounded"></div>
-         <div className="w-3/4 h-1 bg-slate-700 rounded"></div>
-         <div className="w-full h-1 bg-slate-700 rounded"></div>
-         <div className="w-5/6 h-1 bg-slate-700 rounded"></div>
-         <div className="mt-auto flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-orange-500/20 border border-orange-500/50 flex items-center justify-center">
-               <FileText className="w-2 h-2 text-orange-500" />
-            </div>
-            <div className="text-[8px] text-slate-400">RISK_AUDIT.PDF</div>
+      {/* Card 1: Pipeline Funnel (Top Left) */}
+      <div className="absolute top-0 left-0 w-44 h-28 bg-slate-900 border border-purple-500/40 rounded-lg shadow-lg transform -rotate-3 hover:rotate-0 hover:z-40 hover:scale-105 transition-all duration-500 p-2 flex flex-col cursor-pointer overflow-hidden">
+         <div className="text-[9px] font-bold text-purple-400 mb-1">Pipeline</div>
+         <div className="flex-1 flex items-center justify-center">
+           <svg viewBox="0 0 60 40" className="w-full h-full">
+             <path d="M5,5 L55,5 L45,15 L45,35 L15,35 L15,15 Z" fill="none" stroke="#a855f7" strokeWidth="1.5" opacity="0.3"/>
+             <path d="M10,8 L50,8 L42,16 L42,32 L18,32 L18,16 Z" fill="none" stroke="#a855f7" strokeWidth="1.5" opacity="0.5"/>
+             <path d="M15,11 L45,11 L39,17 L39,29 L21,29 L21,17 Z" fill="none" stroke="#a855f7" strokeWidth="1.5" opacity="0.7"/>
+             <path d="M20,14 L40,14 L36,18 L36,26 L24,26 L24,18 Z" fill="#a855f7" opacity="0.3"/>
+             <text x="30" y="22" textAnchor="middle" fill="#c084fc" fontSize="5" fontWeight="bold">847</text>
+           </svg>
          </div>
       </div>
 
-      {/* Card 2: Data Table (Back Right/Middle) */}
-      <div className="absolute top-0 right-4 w-48 h-36 bg-slate-900 border border-slate-600 rounded-lg shadow-lg transform rotate-3 hover:rotate-0 hover:z-40 transition-all duration-500 p-0 overflow-hidden flex flex-col group/card2 cursor-pointer">
-         <div className="h-6 bg-slate-800 border-b border-slate-700 flex items-center px-2">
-            <div className="text-[9px] font-bold text-slate-400">DATA_EXPORT_V4</div>
+      {/* Card 2: AWS Utilization Trend (Top Right) */}
+      <div className="absolute top-2 right-0 w-44 h-28 bg-slate-900 border border-orange-500/40 rounded-lg shadow-lg transform rotate-2 hover:rotate-0 hover:z-40 hover:scale-105 transition-all duration-500 p-2 flex flex-col cursor-pointer overflow-hidden">
+         <div className="text-[9px] font-bold text-orange-400 mb-1">AWS Utilization</div>
+         <div className="flex-1 flex items-end px-1">
+           <svg viewBox="0 0 80 30" className="w-full h-full" preserveAspectRatio="none">
+             <defs>
+               <linearGradient id="awsGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                 <stop offset="0%" stopColor="#f97316" stopOpacity="0.4"/>
+                 <stop offset="100%" stopColor="#f97316" stopOpacity="0"/>
+               </linearGradient>
+             </defs>
+             <path d="M0,25 Q10,20 20,22 T40,15 T60,18 T80,8 L80,30 L0,30 Z" fill="url(#awsGrad)"/>
+             <path d="M0,25 Q10,20 20,22 T40,15 T60,18 T80,8" fill="none" stroke="#f97316" strokeWidth="1.5"/>
+             <circle cx="80" cy="8" r="2" fill="#f97316"/>
+           </svg>
          </div>
-         <div className="p-2 grid grid-cols-3 gap-1">
-            {[...Array(9)].map((_, i) => (
-              <div key={i} className="h-4 bg-slate-800/50 rounded border border-slate-700/30"></div>
-            ))}
-         </div>
-         <div className="mt-auto p-2 border-t border-slate-800 flex items-center justify-between">
-            <div className="flex gap-1">
-               <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-               <div className="text-[8px] text-green-500">READY</div>
-            </div>
-            <Table2 className="w-3 h-3 text-slate-500" />
+         <div className="text-[8px] text-orange-300 text-right">73% avg</div>
+      </div>
+
+      {/* Card 3: Ontology Sankey (Bottom Left) */}
+      <div className="absolute bottom-0 left-2 w-44 h-28 bg-slate-900 border border-cyan-500/40 rounded-lg shadow-lg transform rotate-1 hover:rotate-0 hover:z-40 hover:scale-105 transition-all duration-500 p-2 flex flex-col cursor-pointer overflow-hidden">
+         <div className="text-[9px] font-bold text-cyan-400 mb-1">Ontology</div>
+         <div className="flex-1 flex items-center justify-center">
+           <svg viewBox="0 0 70 35" className="w-full h-full">
+             <defs>
+               <linearGradient id="sankeyGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                 <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.8"/>
+                 <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.8"/>
+               </linearGradient>
+               <linearGradient id="sankeyGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                 <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5"/>
+                 <stop offset="100%" stopColor="#a855f7" stopOpacity="0.5"/>
+               </linearGradient>
+             </defs>
+             <rect x="2" y="4" width="6" height="8" fill="#06b6d4" rx="1"/>
+             <rect x="2" y="14" width="6" height="6" fill="#06b6d4" rx="1"/>
+             <rect x="2" y="22" width="6" height="10" fill="#06b6d4" rx="1"/>
+             <rect x="32" y="6" width="6" height="10" fill="#8b5cf6" rx="1"/>
+             <rect x="32" y="19" width="6" height="12" fill="#8b5cf6" rx="1"/>
+             <rect x="62" y="10" width="6" height="15" fill="#a855f7" rx="1"/>
+             <path d="M8,8 Q20,8 32,11" stroke="url(#sankeyGrad1)" strokeWidth="3" fill="none" opacity="0.6"/>
+             <path d="M8,17 Q20,17 32,14" stroke="url(#sankeyGrad1)" strokeWidth="2" fill="none" opacity="0.5"/>
+             <path d="M8,27 Q20,27 32,25" stroke="url(#sankeyGrad2)" strokeWidth="4" fill="none" opacity="0.6"/>
+             <path d="M38,11 Q50,11 62,15" stroke="url(#sankeyGrad2)" strokeWidth="3" fill="none" opacity="0.5"/>
+             <path d="M38,25 Q50,22 62,20" stroke="url(#sankeyGrad2)" strokeWidth="4" fill="none" opacity="0.6"/>
+           </svg>
          </div>
       </div>
 
-      {/* Card 3: Analytics Dashboard (Front Center) */}
+      {/* Card 4: Revenues Multi-line Trend (Bottom Right - Featured) */}
       <div className={cn(
-        "absolute bottom-0 left-1/2 -translate-x-1/2 w-56 h-40 bg-slate-950 border-2 border-cyan-500/30 rounded-xl shadow-2xl z-30 transform hover:scale-105 transition-all duration-300 group/card3 cursor-pointer overflow-hidden",
-        selected ? "border-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.5)]" : ""
+        "absolute bottom-2 right-0 w-48 h-32 bg-slate-950 border-2 border-green-500/40 rounded-xl shadow-2xl z-30 transform hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden",
+        selected ? "border-green-400 shadow-[0_0_25px_rgba(34,197,94,0.5)]" : ""
       )}>
-        {/* Header */}
-        <div className="h-8 bg-cyan-950/30 border-b border-cyan-900/50 flex items-center px-3 justify-between">
-           <span className="text-[10px] font-bold text-cyan-400 tracking-wider">LIVE METRICS</span>
+        <div className="h-6 bg-green-950/30 border-b border-green-900/50 flex items-center px-2 justify-between">
+           <span className="text-[9px] font-bold text-green-400">Revenues</span>
            <div className="flex gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
            </div>
         </div>
-        
-        {/* Content */}
-        <div className="p-3 grid grid-cols-2 gap-3 h-full">
-           {/* Donut Chart */}
-           <div className="relative flex items-center justify-center">
-              <svg viewBox="0 0 32 32" className="w-12 h-12 rotate-[-90deg]">
-                 <circle cx="16" cy="16" r="14" fill="none" stroke="#1e293b" strokeWidth="4" />
-                 <circle cx="16" cy="16" r="14" fill="none" stroke="#06b6d4" strokeWidth="4" strokeDasharray="70 100" />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white">
-                 78%
-              </div>
-           </div>
-           
-           {/* Bar Chart */}
-           <div className="flex items-end justify-between gap-1 pb-4">
-              <div className="w-2 bg-slate-700 h-[40%] rounded-t-[1px]"></div>
-              <div className="w-2 bg-cyan-800 h-[60%] rounded-t-[1px]"></div>
-              <div className="w-2 bg-cyan-600 h-[80%] rounded-t-[1px]"></div>
-              <div className="w-2 bg-cyan-400 h-[100%] rounded-t-[1px]"></div>
-           </div>
+        <div className="p-2 h-[calc(100%-24px)]">
+          <svg viewBox="0 0 80 40" className="w-full h-full" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="revGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#22c55e" stopOpacity="0.3"/>
+                <stop offset="100%" stopColor="#22c55e" stopOpacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,35 Q10,30 20,28 T40,20 T60,15 T80,5 L80,40 L0,40 Z" fill="url(#revGrad)"/>
+            <path d="M0,35 Q10,30 20,28 T40,20 T60,15 T80,5" fill="none" stroke="#22c55e" strokeWidth="1.5"/>
+            <path d="M0,32 Q15,28 30,30 T50,22 T70,25 T80,18" fill="none" stroke="#4ade80" strokeWidth="1" opacity="0.7"/>
+            <path d="M0,38 Q20,35 35,33 T55,28 T75,30 T80,25" fill="none" stroke="#86efac" strokeWidth="1" opacity="0.5"/>
+            <circle cx="80" cy="5" r="2" fill="#22c55e"/>
+            <circle cx="80" cy="18" r="1.5" fill="#4ade80"/>
+            <circle cx="80" cy="25" r="1.5" fill="#86efac"/>
+          </svg>
         </div>
       </div>
 
