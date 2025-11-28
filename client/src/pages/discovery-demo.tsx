@@ -516,7 +516,7 @@ const AnalyticsNode = ({ data, selected }: NodeProps) => {
              <circle cx="80" cy="8" r="2" fill="#f97316"/>
            </svg>
          </div>
-         <div className="text-[8px] text-orange-300 text-right">73% avg</div>
+         <div className="text-[8px] text-orange-300 text-right">99% avg</div>
       </div>
 
       {/* Card 3: Cloud Spend Pie Chart (Bottom Left) */}
