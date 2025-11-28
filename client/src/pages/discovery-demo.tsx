@@ -519,33 +519,23 @@ const AnalyticsNode = ({ data, selected }: NodeProps) => {
          <div className="text-[8px] text-orange-300 text-right">73% avg</div>
       </div>
 
-      {/* Card 3: Ontology Sankey (Bottom Left) */}
+      {/* Card 3: Cloud Spend Pie Chart (Bottom Left) */}
       <div className="absolute bottom-0 left-2 w-44 h-28 bg-slate-900 border border-cyan-500/40 rounded-lg shadow-lg transform rotate-1 hover:rotate-0 hover:z-40 hover:scale-105 transition-all duration-500 p-2 flex flex-col cursor-pointer overflow-hidden">
-         <div className="text-[9px] font-bold text-cyan-400 mb-1">Ontology</div>
-         <div className="flex-1 flex items-center justify-center">
-           <svg viewBox="0 0 70 35" className="w-full h-full">
-             <defs>
-               <linearGradient id="sankeyGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                 <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.8"/>
-                 <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.8"/>
-               </linearGradient>
-               <linearGradient id="sankeyGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                 <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.5"/>
-                 <stop offset="100%" stopColor="#a855f7" stopOpacity="0.5"/>
-               </linearGradient>
-             </defs>
-             <rect x="2" y="4" width="6" height="8" fill="#06b6d4" rx="1"/>
-             <rect x="2" y="14" width="6" height="6" fill="#06b6d4" rx="1"/>
-             <rect x="2" y="22" width="6" height="10" fill="#06b6d4" rx="1"/>
-             <rect x="32" y="6" width="6" height="10" fill="#8b5cf6" rx="1"/>
-             <rect x="32" y="19" width="6" height="12" fill="#8b5cf6" rx="1"/>
-             <rect x="62" y="10" width="6" height="15" fill="#a855f7" rx="1"/>
-             <path d="M8,8 Q20,8 32,11" stroke="url(#sankeyGrad1)" strokeWidth="3" fill="none" opacity="0.6"/>
-             <path d="M8,17 Q20,17 32,14" stroke="url(#sankeyGrad1)" strokeWidth="2" fill="none" opacity="0.5"/>
-             <path d="M8,27 Q20,27 32,25" stroke="url(#sankeyGrad2)" strokeWidth="4" fill="none" opacity="0.6"/>
-             <path d="M38,11 Q50,11 62,15" stroke="url(#sankeyGrad2)" strokeWidth="3" fill="none" opacity="0.5"/>
-             <path d="M38,25 Q50,22 62,20" stroke="url(#sankeyGrad2)" strokeWidth="4" fill="none" opacity="0.6"/>
+         <div className="text-[9px] font-bold text-cyan-400 mb-1">Cloud Spend</div>
+         <div className="flex-1 flex items-center justify-center gap-2">
+           <svg viewBox="0 0 36 36" className="w-16 h-16">
+             {/* Pie slices using stroke-dasharray technique */}
+             <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#06b6d4" strokeWidth="6" strokeDasharray="40 60" strokeDashoffset="25"/>
+             <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#8b5cf6" strokeWidth="6" strokeDasharray="25 75" strokeDashoffset="85"/>
+             <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#f97316" strokeWidth="6" strokeDasharray="20 80" strokeDashoffset="60"/>
+             <circle cx="18" cy="18" r="15.9" fill="transparent" stroke="#22c55e" strokeWidth="6" strokeDasharray="15 85" strokeDashoffset="40"/>
            </svg>
+           <div className="flex flex-col gap-0.5 text-[7px]">
+             <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-cyan-500"></div><span className="text-slate-300">AWS 40%</span></div>
+             <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div><span className="text-slate-300">Azure 25%</span></div>
+             <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div><span className="text-slate-300">GCP 20%</span></div>
+             <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div><span className="text-slate-300">Other 15%</span></div>
+           </div>
          </div>
       </div>
 
