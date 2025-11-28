@@ -347,7 +347,7 @@ const ProcessingNode = ({ id, data, selected }: NodeProps) => {
               <img 
                 src={data.bottomImage} 
                 alt="Ontology Graph" 
-                className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity"
+                className="w-full h-full object-contain opacity-90 hover:opacity-100 transition-opacity"
               />
             </div>
           )}
@@ -415,7 +415,7 @@ const OntologyNode = ({ data }: NodeProps) => {
       <Handle type="source" position={Position.Right} className="!bg-cyan-500 !w-3 !h-3 !-right-1.5" />
       
       <div className="absolute inset-0 bg-cyan-900/20 backdrop-blur-sm z-0"></div>
-      <img src={dclGraph} alt="Ontology Graph" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity z-10" />
+      <img src={dclGraph} alt="Ontology Graph" className="absolute inset-0 w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity z-10" />
       
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
         <div className="text-lg font-bold text-cyan-200">Ontology Graph</div>
