@@ -622,8 +622,8 @@ const BLLNode = ({ data, selected }: NodeProps) => {
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none"></div>
         <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
         
-        {/* Icon */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        {/* Icon - positioned higher to avoid text overlap */}
+        <div className="absolute inset-0 flex items-start justify-center pt-4">
           <div className={cn(
             "w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300",
             "bg-gradient-to-br from-cyan-500/30 to-cyan-600/20 backdrop-blur-sm",
