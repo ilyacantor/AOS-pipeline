@@ -319,7 +319,7 @@ const ProcessingNode = ({ id, data, selected }: NodeProps) => {
         </div>
         <div className="text-center z-10">
           <div className={cn("text-xs font-bold", data.active ? "text-cyan-100" : "text-slate-200")}>{data.label}</div>
-          <div className={cn("text-[9px] uppercase tracking-wider", data.active ? "text-cyan-300/70" : "text-slate-500")}>{data.sub}</div>
+          <div className={cn("text-[9px] uppercase tracking-wider", data.active ? "text-cyan-300" : "text-cyan-500")}>{data.sub}</div>
         </div>
         
         {data.active && (
@@ -644,7 +644,7 @@ const BLLNode = ({ data, selected }: NodeProps) => {
               "text-lg font-bold transition-colors duration-300",
               data.active ? "text-cyan-200" : "text-cyan-300"
             )}>BLL</div>
-            <div className="text-[8px] text-cyan-400/80 leading-tight">Business Logic Layer</div>
+            <div className="text-[8px] text-cyan-500 leading-tight">Business Logic Layer</div>
           </div>
         </div>
       </div>
