@@ -649,8 +649,21 @@ interface GraphViewProps {
 function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
 
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
+
+  // Fit view on window resize
+  useEffect(() => {
+    if (!reactFlowInstance) return;
+
+    const handleResize = () => {
+      reactFlowInstance.fitView({ padding: 0.15, duration: 200 });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [reactFlowInstance]);
 
   useEffect(() => {
     const isRunning = pipelineState === 'running';
@@ -1186,9 +1199,14 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
         onNodeClick={handleNodeClick}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
+        onInit={(instance) => {
+          setReactFlowInstance(instance);
+          instance.fitView({ padding: 0.15 });
+        }}
         fitView
+        fitViewOptions={{ padding: 0.15 }}
         attributionPosition="bottom-right"
-        minZoom={0.5}
+        minZoom={0.3}
         maxZoom={1.5}
         defaultEdgeOptions={{ type: 'dataflow', markerEnd: { type: MarkerType.ArrowClosed, color: '#334155' } }}
       >
