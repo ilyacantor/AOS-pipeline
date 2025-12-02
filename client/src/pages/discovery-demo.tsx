@@ -69,7 +69,7 @@ import dclVideo from '../assets/dcl-video.mp4';
 import dclGraph from '../assets/dcl-graph.png';
 import catalogueImage from '../assets/catalogue-dashboard.png';
 import mainLogo from '../assets/logo-full.png';
-import agentsImage from '../../attached_assets/Untitled-1_1764699395923.png';
+import agentsImage from '../assets/agents-image.png';
 
 // Utility function
 function cn(...inputs: ClassValue[]) {
