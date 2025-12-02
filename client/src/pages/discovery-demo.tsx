@@ -434,7 +434,7 @@ const OntologyNode = ({ data }: NodeProps) => {
       <img src={dclGraph} alt="Ontology Graph" className="absolute inset-0 w-full h-full object-contain opacity-90 group-hover:opacity-100 transition-opacity z-10" />
       
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
-        <div className="text-lg font-bold text-cyan-200">Ontology Graph</div>
+        <div className="text-lg font-bold text-cyan-200">Ontology</div>
         <div className="text-[9px] text-cyan-400/80">Connectivity Layer</div>
       </div>
     </div>
@@ -598,6 +598,69 @@ const AnalyticsNode = ({ data, selected }: NodeProps) => {
   );
 };
 
+const BLLNode = ({ data, selected }: NodeProps) => {
+  return (
+    <div className={cn(
+      "relative flex flex-col items-center transition-all duration-500 group",
+      data.active && "scale-105"
+    )}>
+      <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-1.5" />
+      <Handle type="source" position={Position.Top} id="top-source" className="!bg-cyan-500 !w-3 !h-3 !-top-1.5" />
+      <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-cyan-500 !w-3 !h-3 !-bottom-1.5" />
+      <Handle type="source" position={Position.Right} id="right-source" className="!bg-cyan-500 !w-3 !h-3 !-right-1.5" />
+      
+      <div className={cn(
+        "relative w-32 h-32 rounded-2xl overflow-hidden transition-all duration-500",
+        "bg-gradient-to-br from-cyan-950/60 via-slate-900/80 to-cyan-900/50",
+        "backdrop-blur-xl border-2",
+        "shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_20px_50px_rgba(0,0,0,0.5)]",
+        data.active ? "border-cyan-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_0_40px_rgba(34,211,238,0.6)]" : "border-cyan-700/50",
+        selected && "border-cyan-300 shadow-[0_0_50px_rgba(34,211,238,0.7)]",
+        "hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]"
+      )}>
+        {/* Glass reflection overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none"></div>
+        <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+        
+        {/* Icon */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className={cn(
+            "w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300",
+            "bg-gradient-to-br from-cyan-500/30 to-cyan-600/20 backdrop-blur-sm",
+            "border border-cyan-400/30",
+            data.active && "from-cyan-400/40 to-cyan-500/30 border-cyan-300/50"
+          )}>
+            <Sparkles className={cn(
+              "w-8 h-8 transition-all duration-300",
+              data.active ? "text-cyan-200" : "text-cyan-400"
+            )} />
+          </div>
+        </div>
+        
+        {/* Label at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
+          <div className="text-center">
+            <div className={cn(
+              "text-lg font-bold transition-colors duration-300",
+              data.active ? "text-cyan-200" : "text-cyan-300"
+            )}>BLL</div>
+            <div className="text-[8px] text-cyan-400/80 leading-tight">Business Logic Layer</div>
+          </div>
+        </div>
+      </div>
+      
+      {data.active && (
+        <div className="absolute -top-2 -right-2 z-50">
+          <span className="flex h-4 w-4 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-cyan-500"></span>
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AgentVideoNode = ({ data }: NodeProps) => {
   return (
     <div className={cn(
@@ -648,6 +711,7 @@ const nodeTypes = {
   ontology: OntologyNode,
   prompt: PromptNode,
   analytics: AnalyticsNode,
+  bll: BLLNode,
   agentVideo: AgentVideoNode,
 };
 
@@ -659,11 +723,11 @@ const initialNodes: Node[] = [
   { id: 'shadow1', type: 'vendor', position: { x: 50, y: 450 }, data: { label: 'Shadow IT', sub: 'Dropbox Personal', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500', glowRed: true } },
   { id: 'shadow2', type: 'vendor', position: { x: 50, y: 550 }, data: { label: 'Shadow IT', sub: 'Unknown AWS Acct', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500', glowRed: true } },
   { id: 'unknown', type: 'vendor', position: { x: 50, y: 650 }, data: { label: '????', sub: 'Unidentified Protocol', icon: <HelpCircle className="w-5 h-5" />, color: 'text-slate-400', glowRed: true } },
-  { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'Asset Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'aod', type: 'processing', position: { x: 350, y: 350 }, data: { label: 'AOD', sub: 'Asset Discovery', icon: <Search className="w-6 h-6" />, shape: 'circle' } },
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 500 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
-  { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'Adaptive API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
-  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'Data Unification', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
-  { id: 'bll', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'BLL', sub: 'Business Logic Layer', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'AAM', sub: 'Adaptive API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'Data Unification', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology' } },
+  { id: 'bll', type: 'bll', position: { x: 1150, y: 350 }, data: { active: false } },
   { id: 'agentVideo', type: 'agentVideo', position: { x: 1400, y: 300 }, data: { active: false } },
   { id: 'nlp', type: 'prompt', position: { x: 1300, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   { id: 'analytics', type: 'analytics', position: { x: 1150, y: 550 }, data: { active: false } },
@@ -879,9 +943,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       );
 
       const sequence = [
-        { id: 'unknown', delay: 3000, newLabel: 'SAP', newSub: 'ERP System', newIcon: <Database className="w-5 h-5" />, newColor: 'text-blue-600' },
+        { id: 'unknown', delay: 3000, newLabel: 'Hootsuite', newSub: 'Social Media', newIcon: <Globe className="w-5 h-5" />, newColor: 'text-orange-500' },
         { id: 'shadow1', delay: 4000, newLabel: 'Hubspot', newSub: 'Marketing CRM', newIcon: <Globe className="w-5 h-5" />, newColor: 'text-orange-500' },
-        { id: 'shadow2', delay: 5000, newLabel: 'Oracle', newSub: 'Financial DB', newIcon: <Database className="w-5 h-5" />, newColor: 'text-red-600' },
+        { id: 'shadow2', delay: 5000, newLabel: 'Greenhouse', newSub: 'HR Platform', newIcon: <Server className="w-5 h-5" />, newColor: 'text-green-500' },
       ];
 
       const timeouts: NodeJS.Timeout[] = [];
