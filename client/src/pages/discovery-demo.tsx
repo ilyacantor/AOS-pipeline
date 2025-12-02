@@ -1165,7 +1165,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
            return e;
         }));
 
-        // 2. After 500ms, Stop Beam & Flash Target Node
+        // 2. After 250ms (2x faster), Stop Beam & Flash Target Node
         const timer = setTimeout(() => {
           setEdges((eds) => eds.map(e => {
              if (e.source === sourceId && e.target === targetId) {
@@ -1193,7 +1193,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             return n;
           }));
 
-          // 3. Turn off flash
+          // 3. Turn off flash (2x faster)
           setTimeout(() => {
             setNodes((nds) => nds.map(n => {
               if (n.id === targetId) {
@@ -1207,12 +1207,12 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
               }
               return n;
             }));
-          }, 500);
+          }, 250);
           
           // (Removed old delayed logic for analytics)
 
 
-          // SPECIAL: If target is AAM (Step 1), reveal logos 1s after flash starts
+          // SPECIAL: If target is AAM (Step 1), reveal logos 500ms after flash starts (2x faster)
           if (targetId === 'aam') {
             setTimeout(() => {
               // Reveal edges
@@ -1231,7 +1231,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                 return n;
               }));
 
-              // Reveal nodes (staggered)
+              // Reveal nodes (staggered, 2x faster)
               const logoIds = ['logo-1', 'logo-2', 'logo-3', 'logo-4', 'logo-5', 'logo-6', 'logo-7', 'logo-8', 'logo-9'];
               
               logoIds.forEach((id, index) => {
@@ -1242,13 +1242,13 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                     }
                     return n;
                   }));
-                }, index * 50); // Quick stagger
+                }, index * 25); // 2x faster stagger
               });
 
-            }, 1000);
+            }, 500);
           }
 
-        }, 500);
+        }, 250);
 
         return () => clearTimeout(timer);
       }
@@ -1367,21 +1367,21 @@ export default function DiscoveryDemoStandalone() {
           setCurrentStage(2);
         }, 8500);
       } else if (currentStage === 2) {
-        // Stage 2 (AAM): Beam + Logos + Label ~ 3s
+        // Stage 2 (AAM): Beam + Logos + Label ~ 1.5s (2x faster after catalogue)
         timer = setTimeout(() => {
           setCurrentStage(3);
-        }, 3000);
+        }, 1500);
       } else if (currentStage === 3) {
-        // Stage 3 (DCL): Beam + Ontology ~ 3s
+        // Stage 3 (DCL): Beam + Ontology ~ 1.5s (2x faster after catalogue)
         timer = setTimeout(() => {
           setCurrentStage(4);
-        }, 3000);
+        }, 1500);
       } else if (currentStage === 4) {
-        // Stage 4 (Agents): Final stage, stop pipeline running state but keep stage 4 active
+        // Stage 4 (BLL): Final stage ~ 2s (2x faster after catalogue)
         timer = setTimeout(() => {
           setIsRunningPipeline(false);
           setIsFinished(true); // Mark as finished so it doesn't reset
-        }, 4000);
+        }, 2000);
       }
 
       return () => clearTimeout(timer);
