@@ -69,6 +69,7 @@ import dclVideo from '../assets/dcl-video.mp4';
 import dclGraph from '../assets/dcl-graph.png';
 import catalogueImage from '../assets/catalogue-dashboard.png';
 import mainLogo from '../assets/logo-full.png';
+import agentsVideo from '../assets/agents-video.mp4';
 
 // Utility function
 function cn(...inputs: ClassValue[]) {
@@ -282,14 +283,19 @@ const ProcessingNode = ({ id, data, selected }: NodeProps) => {
          <Handle type="source" position={Position.Right} id="right-source" className="!bg-slate-600 !w-2 !h-2 !-right-1" />
       )}
 
-      {/* Top Source Handle for Agents -> NLP */}
-      {id === 'agents' && (
+      {/* Top Source Handle for BLL -> NLP */}
+      {id === 'bll' && (
          <Handle type="source" position={Position.Top} id="top-source" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
       )}
 
-      {/* Bottom Source Handle for Agents -> Analytics */}
-      {id === 'agents' && (
+      {/* Bottom Source Handle for BLL -> Analytics */}
+      {id === 'bll' && (
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
+      )}
+
+      {/* Right Source Handle for BLL -> Agents */}
+      {id === 'bll' && (
+         <Handle type="source" position={Position.Right} id="right-source" className="!bg-slate-600 !w-2 !h-2 !-right-1" />
       )}
 
       <Handle type="target" position={Position.Left} className="!bg-slate-600 !w-2 !h-2 -ml-1" />
@@ -592,6 +598,47 @@ const AnalyticsNode = ({ data, selected }: NodeProps) => {
   );
 };
 
+const AgentVideoNode = ({ data }: NodeProps) => {
+  return (
+    <div className={cn(
+      "relative flex flex-col items-center transition-all duration-300",
+      data.active ? "scale-105" : ""
+    )}>
+      <Handle type="target" position={Position.Left} className="!bg-cyan-500 !w-3 !h-3 !-left-1.5" />
+      
+      <div className={cn(
+        "relative w-48 h-32 rounded-lg overflow-hidden shadow-2xl transition-all duration-500 bg-slate-900 border-2 cursor-pointer",
+        data.active ? "border-cyan-400 shadow-[0_0_30px_rgba(34,211,238,0.5)]" : "border-slate-600",
+        "hover:border-cyan-300 hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] hover:scale-105",
+        "group"
+      )}>
+        <video 
+          src={agentsVideo} 
+          className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+        />
+        
+        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
+          <div className="text-lg font-bold text-cyan-200">Agents</div>
+          <div className="text-[9px] text-cyan-400/80">Autonomous Execution</div>
+        </div>
+      </div>
+
+      {data.active && (
+        <div className="absolute -top-2 -right-2 z-50">
+          <span className="flex h-4 w-4 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-4 w-4 bg-cyan-500"></span>
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const nodeTypes = {
   vendor: VendorNode,
   processing: ProcessingNode,
@@ -601,6 +648,7 @@ const nodeTypes = {
   ontology: OntologyNode,
   prompt: PromptNode,
   analytics: AnalyticsNode,
+  agentVideo: AgentVideoNode,
 };
 
 const initialNodes: Node[] = [
@@ -615,7 +663,8 @@ const initialNodes: Node[] = [
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 500 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'Adaptive API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'Data Unification', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
-  { id: 'agents', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'bll', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'BLL', sub: 'Business Logic Layer', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'agentVideo', type: 'agentVideo', position: { x: 1400, y: 300 }, data: { active: false } },
   { id: 'nlp', type: 'prompt', position: { x: 1150, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   { id: 'analytics', type: 'analytics', position: { x: 1150, y: 550 }, data: { active: false } },
   
@@ -644,9 +693,10 @@ const initialEdges: Edge[] = [
   { id: 'e-unk-aod', source: 'unknown', target: 'aod', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-ag-nlp', source: 'agents', sourceHandle: 'top-source', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-ag-an', source: 'agents', sourceHandle: 'bottom-source', target: 'analytics', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-dcl-bll', source: 'dcl', target: 'bll', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-bll-nlp', source: 'bll', sourceHandle: 'top-source', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-bll-an', source: 'bll', sourceHandle: 'bottom-source', target: 'analytics', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-bll-agent', source: 'bll', sourceHandle: 'right-source', target: 'agentVideo', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   // Logo Connections (From AAM Top to Logos Bottom)
   { id: 'e-aam-l1', source: 'aam', sourceHandle: 'top-source', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
   { id: 'e-aam-l2', source: 'aam', sourceHandle: 'top-source', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
@@ -703,7 +753,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
            
            if (pipelineStep >= 1 && node.id === 'aam') active = true; // Keep AAM active
            if (pipelineStep >= 2 && node.id === 'dcl') active = true; // Keep DCL active (requested "glow like AOD and DCL glow")
-           if (pipelineStep === 3 && (node.id === 'agents' || node.id === 'nlp' || node.id === 'analytics')) active = true;
+           if (pipelineStep === 3 && (node.id === 'bll' || node.id === 'nlp' || node.id === 'analytics' || node.id === 'agentVideo')) active = true;
            
            // AOD and AAM are never marked complete while running to keep them lit/glowing
            // if (pipelineStep > 1 && node.id === 'aam') complete = true; // REMOVED to keep glow
@@ -756,9 +806,10 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             if (pipelineStep === 1 && edge.source === 'aod' && edge.target === 'aam') { active = true; stroke = '#0bcad9'; }
             if (pipelineStep === 2 && edge.source === 'aam' && edge.target === 'dcl') { active = true; stroke = '#0bcad9'; }
             if (pipelineStep === 3 && (
-                (edge.source === 'dcl' && edge.target === 'agents') || 
-                (edge.source === 'agents' && edge.target === 'nlp') ||
-                (edge.source === 'agents' && edge.target === 'analytics')
+                (edge.source === 'dcl' && edge.target === 'bll') || 
+                (edge.source === 'bll' && edge.target === 'nlp') ||
+                (edge.source === 'bll' && edge.target === 'analytics') ||
+                (edge.source === 'bll' && edge.target === 'agentVideo')
               )) { 
                 active = true; 
                 stroke = '#0bcad9'; 
@@ -787,7 +838,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     if (pipelineState === 'running' && pipelineStep === 0) {
       // Reset edges beaming and hidden state for catalogue AND LOGOS AND ANALYTICS
       setEdges((eds) => eds.map(e => {
-        if (e.id === 'e-ag-an') return { ...e, data: { ...e.data, active: false } };
+        if (e.id === 'e-bll-an') return { ...e, data: { ...e.data, active: false } };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         return { ...e, data: { ...e.data, beaming: false } };
       }));
@@ -978,7 +1029,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     } else if (pipelineState === 'idle') {
       // Reset everything when not running (End Demo)
       setEdges((eds) => eds.map(e => {
-        if (e.id === 'e-ag-an') return { ...e, data: { ...e.data, active: false, beaming: false }, animated: false };
+        if (e.id === 'e-bll-an') return { ...e, data: { ...e.data, active: false, beaming: false }, animated: false };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         
         // Also reset any beaming/active state for standard edges to ensure clean slate
@@ -1034,7 +1085,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       
       if (pipelineStep === 1) { sourceId = 'aod'; targetId = 'aam'; }
       if (pipelineStep === 2) { sourceId = 'aam'; targetId = 'dcl'; }
-      if (pipelineStep === 3) { sourceId = 'dcl'; targetId = 'agents'; } // Trigger for agents, we'll handle NLP manually or together
+      if (pipelineStep === 3) { sourceId = 'dcl'; targetId = 'bll'; } // Trigger for BLL, we'll handle NLP manually or together
 
       if (sourceId && targetId) {
         // 1. Start Beam
@@ -1691,7 +1742,7 @@ function StepperNavigation({
     { num: 1, label: 'AOD' },
     { num: 2, label: 'AAM' },
     { num: 3, label: 'DCL' },
-    { num: 4, label: 'Agents' },
+    { num: 4, label: 'BLL' },
   ];
 
   return (
