@@ -69,7 +69,7 @@ import dclVideo from '../assets/dcl-video.mp4';
 import dclGraph from '../assets/dcl-graph.png';
 import catalogueImage from '../assets/catalogue-dashboard.png';
 import mainLogo from '../assets/logo-full.png';
-import agentsVideo from '../assets/agents-video.mp4';
+import agentsImage from '../../attached_assets/Untitled-1_1764699395923.png';
 
 // Utility function
 function cn(...inputs: ClassValue[]) {
@@ -675,13 +675,10 @@ const AgentVideoNode = ({ data }: NodeProps) => {
         "hover:border-cyan-300 hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] hover:scale-105",
         "group"
       )}>
-        <video 
-          src={agentsVideo} 
+        <img 
+          src={agentsImage} 
+          alt="Agents"
           className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-          autoPlay 
-          loop 
-          muted 
-          playsInline
         />
         
         <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/90 to-transparent z-20">
@@ -717,9 +714,9 @@ const nodeTypes = {
 
 const initialNodes: Node[] = [
   { id: 'salesforce', type: 'vendor', position: { x: 50, y: 50 }, data: { label: 'Salesforce', sub: '35 Assets', icon: <Globe className="w-5 h-5" />, color: 'text-blue-400' } },
-  { id: 'mongodb', type: 'vendor', position: { x: 50, y: 150 }, data: { label: 'MongoDB', sub: '28 Assets', icon: <Database className="w-5 h-5" />, color: 'text-green-500' } },
+  { id: 'mongodb', type: 'vendor', position: { x: 50, y: 150 }, data: { label: 'SAP', sub: '28 Assets', icon: <Database className="w-5 h-5" />, color: 'text-blue-500' } },
   { id: 'supabase', type: 'vendor', position: { x: 50, y: 250 }, data: { label: 'Supabase', sub: '42 Assets', icon: <Server className="w-5 h-5" />, color: 'text-emerald-400' } },
-  { id: 'legacy', type: 'vendor', position: { x: 50, y: 350 }, data: { label: 'Legacy Files', sub: '12 Assets', icon: <FileText className="w-5 h-5" />, color: 'text-orange-400' } },
+  { id: 'legacy', type: 'vendor', position: { x: 50, y: 350 }, data: { label: 'Legacy On-prem', sub: '12 Assets', icon: <FileText className="w-5 h-5" />, color: 'text-orange-400' } },
   { id: 'shadow1', type: 'vendor', position: { x: 50, y: 450 }, data: { label: 'Shadow IT', sub: 'Dropbox Personal', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500', glowRed: true } },
   { id: 'shadow2', type: 'vendor', position: { x: 50, y: 550 }, data: { label: 'Shadow IT', sub: 'Unknown AWS Acct', icon: <AlertTriangle className="w-5 h-5" />, color: 'text-red-500', glowRed: true } },
   { id: 'unknown', type: 'vendor', position: { x: 50, y: 650 }, data: { label: '????', sub: 'Unidentified Protocol', icon: <HelpCircle className="w-5 h-5" />, color: 'text-slate-400', glowRed: true } },
