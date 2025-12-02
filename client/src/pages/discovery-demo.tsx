@@ -940,15 +940,15 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
       );
 
       const sequence = [
-        { id: 'unknown', delay: 3000, newLabel: 'Hootsuite', newSub: 'Social Media', newIcon: <Globe className="w-5 h-5" />, newColor: 'text-orange-500' },
-        { id: 'shadow1', delay: 4000, newLabel: 'Hubspot', newSub: 'Marketing CRM', newIcon: <Globe className="w-5 h-5" />, newColor: 'text-orange-500' },
-        { id: 'shadow2', delay: 5000, newLabel: 'Greenhouse', newSub: 'HR Platform', newIcon: <Server className="w-5 h-5" />, newColor: 'text-green-500' },
+        { id: 'unknown', delay: 1500, newLabel: 'Hootsuite', newSub: 'Social Media', newIcon: <Globe className="w-5 h-5" />, newColor: 'text-orange-500' },
+        { id: 'shadow1', delay: 2000, newLabel: 'Hubspot', newSub: 'Marketing CRM', newIcon: <Globe className="w-5 h-5" />, newColor: 'text-orange-500' },
+        { id: 'shadow2', delay: 2500, newLabel: 'Greenhouse', newSub: 'HR Platform', newIcon: <Server className="w-5 h-5" />, newColor: 'text-green-500' },
       ];
 
       const timeouts: NodeJS.Timeout[] = [];
 
       sequence.forEach((item) => {
-        // Start Red Glow (1s before transform)
+        // Start Red Glow (500ms before transform - 2x faster)
         timeouts.push(setTimeout(() => {
           setNodes((currentNodes) => 
             currentNodes.map((node) => {
@@ -958,9 +958,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
               return node;
             })
           );
-        }, item.delay - 1000));
+        }, item.delay - 500));
 
-        // Start Beam (500ms before transform)
+        // Start Beam (250ms before transform - 2x faster)
         timeouts.push(setTimeout(() => {
           setEdges((eds) => eds.map(e => {
              if (e.source === item.id && e.target === 'aod') {
@@ -968,7 +968,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
              }
              return e;
           }));
-        }, item.delay - 500));
+        }, item.delay - 250));
 
         // Transform & Flash & Stop Beam & Switch to Green Glow
         timeouts.push(setTimeout(() => {
@@ -1000,7 +1000,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             })
           );
           
-          // Turn off flash after 500ms (keep green glow)
+          // Turn off flash after 250ms (keep green glow - 2x faster)
           setTimeout(() => {
             setNodes((currentNodes) => 
               currentNodes.map((node) => {
@@ -1010,17 +1010,17 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                 return node;
               })
             );
-          }, 500);
+          }, 250);
 
         }, item.delay));
       });
 
-      // NEW: Green Glow Sequence for existing nodes (Legacy -> Supabase -> MongoDB -> Salesforce)
+      // NEW: Green Glow Sequence for existing nodes (Legacy -> Supabase -> SAP -> Salesforce) - 2x faster
       const greenSequence = [
-        { id: 'legacy', delay: 5500 },
-        { id: 'supabase', delay: 6000 },
-        { id: 'mongodb', delay: 6500 },
-        { id: 'salesforce', delay: 7000 },
+        { id: 'legacy', delay: 2750 },
+        { id: 'supabase', delay: 3000 },
+        { id: 'mongodb', delay: 3250 },
+        { id: 'salesforce', delay: 3500 },
       ];
 
       greenSequence.forEach((item) => {
@@ -1035,7 +1035,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             })
           );
 
-          // Turn off flash
+          // Turn off flash (2x faster)
           setTimeout(() => {
              setNodes((currentNodes) => 
                currentNodes.map((node) => {
@@ -1045,11 +1045,11 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
                  return node;
                })
              );
-          }, 500);
+          }, 250);
         }, item.delay));
       });
 
-      // Materialize Catalogue (after 7.5s now to allow sequence to finish)
+      // Materialize Catalogue (after 3.75s - 2x faster)
       timeouts.push(setTimeout(() => {
         setNodes((currentNodes) => 
           currentNodes.map((node) => {
@@ -1069,7 +1069,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
           return e;
         }));
 
-        // Turn off flash for catalogue
+        // Turn off flash for catalogue (2x faster)
         setTimeout(() => {
           setNodes((currentNodes) => 
             currentNodes.map((node) => {
@@ -1079,9 +1079,9 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
               return node;
             })
           );
-        }, 500);
+        }, 250);
 
-      }, 7500));
+      }, 3750));
 
       // Safety check: Ensure catalogue edge is visible if catalogue is visible (in case of race conditions)
       // This is just a precaution, the main logic is above.
@@ -1362,10 +1362,10 @@ export default function DiscoveryDemoStandalone() {
       let timer: NodeJS.Timeout;
 
       if (currentStage === 1) {
-        // Stage 1 (AOD): Discovery (3s + 1s + 1s) + Catalogue (2s) + buffer ~ 8s total
+        // Stage 1 (AOD): Discovery - 2x faster ~ 4.25s total
         timer = setTimeout(() => {
           setCurrentStage(2);
-        }, 8500);
+        }, 4250);
       } else if (currentStage === 2) {
         // Stage 2 (AAM): Beam + Logos + Label ~ 1.5s (2x faster after catalogue)
         timer = setTimeout(() => {
