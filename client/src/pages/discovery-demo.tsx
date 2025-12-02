@@ -665,7 +665,7 @@ const initialNodes: Node[] = [
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'Data Unification', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
   { id: 'bll', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'BLL', sub: 'Business Logic Layer', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'agentVideo', type: 'agentVideo', position: { x: 1400, y: 300 }, data: { active: false } },
-  { id: 'nlp', type: 'prompt', position: { x: 1150, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'nlp', type: 'prompt', position: { x: 1300, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   { id: 'analytics', type: 'analytics', position: { x: 1150, y: 550 }, data: { active: false } },
   
   // API Mesh Label
