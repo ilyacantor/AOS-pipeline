@@ -1,0 +1,105 @@
+Yeah, I see what’s happening from the screenshot – you *do* have DCL feeding NLP + Agents + the analytics cluster, but visually it’s still not “a fork on the mainline” before Agents. It looks like three separate edges coming out of DCL, plus Ontology Graph is still in the middle of the dashboards branch.
+
+The clean way to force the fork-on-mainline look is to add a tiny **hub node** right after DCL and branch from that, instead of trying to be clever with `sourceHandle`s.
+
+Here’s a prompt you can paste to Replit Agent that should get you there:
+
+---
+
+**Prompt for Replit Agent (copy-paste)**
+
+> We’re working in the AOS_Overview ReactFlow diagram.
+>
+> **Goal**
+> Turn the section after **Data Unification** into a simple fork from the mainline with **three equal consumers of information**:
+>
+> * Natural Language Query
+> * Agents
+> * Dashboards (the funnel + charts cluster)
+>
+> The fork should visually happen **on the mainline just before Agents**, without Agents acting like a parent of NLP or Dashboards.
+>
+> ### 1. Introduce a small “hub” node after DCL
+>
+> 1. In the nodes definition for the platform visualization, add a tiny router node right after `dcl`:
+>
+>    * `id: 'dcl-hub'`
+>    * type can be something simple like `'router'` or reuse an existing minimal node type
+>    * `position: { x: 1000, y: 350 }` (same Y as DCL so it sits on the mainline)
+>    * No label, no icon; make it visually tiny / neutral:
+>
+>      * no text
+>      * low opacity or just a small dot
+>      * `draggable: false`, `selectable: false`, `connectable: false` if those props exist
+> 2. The mainline should now be:
+>
+>    `… → asset-discovery → aam → dcl → dcl-hub`
+>
+> ### 2. Rewire edges to branch from the hub, not DCL or Agents
+>
+> Find all edges that involve `dcl`, `agents`, `nlp`, `analytics` / dashboards and update them as follows **in every stage / edges array you use for the overview**:
+>
+> 1. **Mainline trunk**
+>
+>    * Add / keep: `dcl → dcl-hub`
+>    * Remove any direct `dcl → agents`, `dcl → nlp`, `dcl → analytics` edges.
+> 2. **Three equal consumers**
+>
+>    * Add edge: `dcl-hub → nlp`
+>    * Add edge: `dcl-hub → agents`
+>    * Add edge: `dcl-hub → dashboards` (or whatever id represents the node that feeds the funnel / charts)
+>    * Remove any edges:
+>
+>      * `agents → nlp`
+>      * `agents → analytics` / dashboards
+>      * `dcl → ontology-graph` if that is currently used as the third branch
+> 3. If we’re currently using `sourceHandle: 'top-source'` / `'bottom-source'` on `dcl`, remove those for now unless the DCL node actually defines those handles. Just use the default handle; the hub node will give us the clean fork we want.
+>
+> ### 3. Fix the nodes for Dashboards vs Ontology Graph
+>
+> 1. Treat **“Ontology Graph”** as a visual annotation under Data Unification, not as the third consumer:
+>
+>    * Move the `ontology` node (or whatever its id is) to sit directly under `dcl` at roughly:
+>
+>      * `position: { x: 850, y: 480 }`
+>    * Remove any edges from or to `ontology` in this overview graph.
+> 2. Create or repurpose a node that represents **Dashboards** / **Analytics hub**:
+>
+>    * Example:
+>
+>      * `id: 'dashboards'`
+>      * `type: 'analytics'` (or whatever card-type we use)
+>      * `position: { x: 1200, y: 480 }`
+>    * Edges:
+>
+>      * From `dcl-hub → dashboards`
+>      * Keep / add edges from `dashboards` to the funnel card, uptime chart, cloud spend, and revenue charts.
+>
+> ### 4. Layout for the three consumers
+>
+> Make sure these three nodes align roughly in a vertical column:
+>
+> * `nlp` at `{ x: 1200, y: 220 }`  // top
+> * `agents` at `{ x: 1200, y: 350 }` // middle
+> * `dashboards` at `{ x: 1200, y: 480 }` // bottom
+>
+> The idea: **DCL → small hub dot → three parallel branches (NLP, Agents, Dashboards)**.
+>
+> ### 5. Sanity check
+>
+> 1. Log out the final edges actually passed to `<ReactFlow>` for the stage 4 view:
+>
+>    * `console.log(edges.map(e => e.source + ' -> ' + e.target));`
+> 2. Confirm there are **no** `agents → nlp` or `agents → dashboards/analytics` edges, and that the only outgoing edges from `dcl` in the overview are:
+>
+>    * `dcl → dcl-hub`
+>
+> Once done, run the app and verify visually that the user sees:
+>
+> * Mainline left-to-right
+> * A single short segment after DCL
+> * Then a fork into three equal consumers: NLP, Agents, Dashboards.
+
+---
+
+If this still produces something dumb, send me the `nodes` and `edges` arrays it ends up with and I’ll rewrite them explicitly so you can just hand that to the agent.
