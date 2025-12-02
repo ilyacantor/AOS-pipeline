@@ -336,10 +336,10 @@ const ProcessingNode = ({ id, data, selected }: NodeProps) => {
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       )}
 
-      {/* Bottom Attachments (Label & Media) */}
-      {(data.bottomLabel || data.bottomMedia || (data.bottomImage && data.showBottom)) && (
+      {/* Bottom Attachments (Label & Media) - only show when showBottom is true */}
+      {data.showBottom && (data.bottomLabel || data.bottomMedia || data.bottomImage) && (
         <div className="absolute top-full mt-4 flex flex-col items-center gap-2 z-20">
-          {data.bottomLabel && data.showBottom && (
+          {data.bottomLabel && (
             <div className="whitespace-nowrap px-4 py-2 rounded-md bg-slate-900/90 border border-slate-700 text-lg font-medium text-cyan-300 shadow-lg backdrop-blur-sm">
               {data.bottomLabel}
             </div>
@@ -358,7 +358,7 @@ const ProcessingNode = ({ id, data, selected }: NodeProps) => {
             </div>
           )}
 
-          {data.bottomImage && data.showBottom && (
+          {data.bottomImage && (
             <div className="w-48 h-28 bg-slate-900/80 rounded-lg border border-slate-700 overflow-hidden shadow-lg backdrop-blur-sm">
               <img 
                 src={data.bottomImage} 
