@@ -282,13 +282,13 @@ const ProcessingNode = ({ id, data, selected }: NodeProps) => {
          <Handle type="source" position={Position.Right} id="right-source" className="!bg-slate-600 !w-2 !h-2 !-right-1" />
       )}
 
-      {/* Top Source Handle for Agents -> NLP */}
-      {id === 'agents' && (
+      {/* Top Source Handle for DCL -> NLP */}
+      {id === 'dcl' && (
          <Handle type="source" position={Position.Top} id="top-source" className="!bg-slate-600 !w-2 !h-2 !-top-1" />
       )}
 
-      {/* Bottom Source Handle for Agents -> Analytics */}
-      {id === 'agents' && (
+      {/* Bottom Source Handle for DCL -> Analytics */}
+      {id === 'dcl' && (
          <Handle type="source" position={Position.Bottom} id="bottom-source" className="!bg-slate-600 !w-2 !h-2 !-bottom-1" />
       )}
 
@@ -615,7 +615,7 @@ const initialNodes: Node[] = [
   { id: 'catalogue', type: 'catalogue', position: { x: 326, y: 500 }, hidden: true, style: { opacity: 0 }, data: { label: 'Asset Catalogue' } },
   { id: 'aam', type: 'processing', position: { x: 600, y: 350 }, data: { label: 'Adaptive API Mesh', icon: <Plug className="w-6 h-6" />, shape: 'circle' } },
   { id: 'dcl', type: 'processing', position: { x: 850, y: 350 }, data: { label: 'Data Unification', sub: 'Ontology', icon: <Network className="w-6 h-6" />, shape: 'circle', bottomImage: dclGraph, bottomLabel: 'Ontology Graph' } },
-  { id: 'agents', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'Agents', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
+  { id: 'agents', type: 'processing', position: { x: 1150, y: 350 }, data: { label: 'BLL', sub: 'Intelligence', icon: <Sparkles className="w-6 h-6" />, shape: 'circle' } },
   { id: 'nlp', type: 'prompt', position: { x: 1150, y: 150 }, data: { label: 'NLP / Intent', sub: 'Understanding', icon: <Brain className="w-6 h-6" />, shape: 'circle' } },
   { id: 'analytics', type: 'analytics', position: { x: 1150, y: 550 }, data: { active: false } },
   
@@ -645,8 +645,8 @@ const initialEdges: Edge[] = [
   { id: 'e-aod-aam', source: 'aod', target: 'aam', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-aam-dcl', source: 'aam', sourceHandle: 'right-source', target: 'dcl', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   { id: 'e-dcl-ag', source: 'dcl', target: 'agents', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-ag-nlp', source: 'agents', sourceHandle: 'top-source', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
-  { id: 'e-ag-an', source: 'agents', sourceHandle: 'bottom-source', target: 'analytics', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-dcl-nlp', source: 'dcl', sourceHandle: 'top-source', target: 'nlp', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
+  { id: 'e-dcl-an', source: 'dcl', sourceHandle: 'bottom-source', target: 'analytics', type: 'dataflow', animated: false, style: { stroke: '#334155', strokeWidth: 2 } },
   // Logo Connections (From AAM Top to Logos Bottom)
   { id: 'e-aam-l1', source: 'aam', sourceHandle: 'top-source', target: 'logo-1', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
   { id: 'e-aam-l2', source: 'aam', sourceHandle: 'top-source', target: 'logo-2', type: 'default', hidden: true, style: { stroke: '#475569', strokeWidth: 1, opacity: 0.5 } },
@@ -757,8 +757,8 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
             if (pipelineStep === 2 && edge.source === 'aam' && edge.target === 'dcl') { active = true; stroke = '#0bcad9'; }
             if (pipelineStep === 3 && (
                 (edge.source === 'dcl' && edge.target === 'agents') || 
-                (edge.source === 'agents' && edge.target === 'nlp') ||
-                (edge.source === 'agents' && edge.target === 'analytics')
+                (edge.source === 'dcl' && edge.target === 'nlp') ||
+                (edge.source === 'dcl' && edge.target === 'analytics')
               )) { 
                 active = true; 
                 stroke = '#0bcad9'; 
@@ -787,7 +787,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     if (pipelineState === 'running' && pipelineStep === 0) {
       // Reset edges beaming and hidden state for catalogue AND LOGOS AND ANALYTICS
       setEdges((eds) => eds.map(e => {
-        if (e.id === 'e-ag-an') return { ...e, data: { ...e.data, active: false } };
+        if (e.id === 'e-dcl-an') return { ...e, data: { ...e.data, active: false } };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         return { ...e, data: { ...e.data, beaming: false } };
       }));
@@ -978,7 +978,7 @@ function GraphView({ pipelineStep, pipelineState, onNodeClick }: GraphViewProps)
     } else if (pipelineState === 'idle') {
       // Reset everything when not running (End Demo)
       setEdges((eds) => eds.map(e => {
-        if (e.id === 'e-ag-an') return { ...e, data: { ...e.data, active: false, beaming: false }, animated: false };
+        if (e.id === 'e-dcl-an') return { ...e, data: { ...e.data, active: false, beaming: false }, animated: false };
         if (e.id.startsWith('e-aam-l')) return { ...e, hidden: true };
         
         // Also reset any beaming/active state for standard edges to ensure clean slate
